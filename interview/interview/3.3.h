@@ -46,7 +46,7 @@ int  SetOfStacks::popAt(int index)
 	
 	int val = res[index1].top();
 	res[index1].pop();
-	
+
 	while (!tmp.empty()){ res[index1].push(tmp.top()); tmp.pop(); }
 	vector<int>data;
 	int size = res.size();

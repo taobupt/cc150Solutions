@@ -7,6 +7,12 @@
 #include<unordered_set>
 #include<set>
 #include<cctype>
+#include<cmath>
+#include<map>
+#include<functional>
 #include<stack>
 #include<string>
+#include<cassert>
+#include<regex>
+#include<functional>
 using namespace std;

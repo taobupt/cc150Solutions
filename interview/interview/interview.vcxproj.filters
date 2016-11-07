@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\coursera">
+      <UniqueIdentifier>{768320cf-d4c3-4ff6-a33e-5eb8956aeb01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\linkedin">
+      <UniqueIdentifier>{3fcdad08-fb31-4d91-b24c-f3fc1dcc7237}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h">
@@ -42,10 +48,309 @@
     <ClInclude Include="1.8.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="2.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="2.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4.9.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Codec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="5.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="13.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.9.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.10.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="9.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="17.9.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="geekforgeeks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayReduction.h">
+      <Filter>Header Files\coursera</Filter>
+    </ClInclude>
+    <ClInclude Include="RoyalName.h">
+      <Filter>Header Files\coursera</Filter>
+    </ClInclude>
+    <ClInclude Include="339NestedListWeightSum.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="205isomorphicString.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="102levelorder.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="TwoSum.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="101symmetric.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="198HouseRobber.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="mergeTwoSortedLists.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="243ShorestWordDistance.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="46permutations.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="47permutationsII.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="173BinarySearchTreeIterator.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="367isperfectNumber.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="103Binary Tree Zigzag Level Order Traversal.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="150EvalRPN.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="236LCAofBinaryTree.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="34searchForanRange.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="152maximumProductSubarray.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="238ProductOfArrayExceptArray.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="187RepeatedDNASequence.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="50Pow(x,n).h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="156BinaryTreeUpsideDown.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="366FindLeavesOfBinaryTree.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="findKsmall.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="277Findthecelebrity.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="254FactorsCombinations.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="311SparseMatrixMul.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="244.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="256PaintHouse.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="364NestedSumII.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="65ValidNumber.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="450DeleteNodeInBst.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="341FlattenNestedInteger.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="253meetingRoomsII.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="canwin.h">
+      <Filter>Header Files\linkedin</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facebook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="5.2.h">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
