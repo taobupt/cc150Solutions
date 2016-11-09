@@ -2703,6 +2703,262 @@ int numIslands(vector<vector<char>>& grid) {
 }
 
 
+// 377 combination sum IV
+
+/*
+Given an integer array with all positive numbers and no duplicates, find the number of possible combinations that add up to a positive integer target.
+
+Example:
+
+nums = [1, 2, 3]
+target = 4
+
+The possible combination ways are:
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+
+Note that different sequences are counted as different combinations.
+
+Therefore the output is 7.
+Follow up:
+What if negative numbers are allowed in the given array?
+How does it change the problem?
+What limitation we need to add to the question to allow negative numbers?
+*/
+
+//@taobupt
+
+
+int combinationSum4(vector<int>& nums, int target) {
+	sort(nums.begin(), nums.end());
+	vector<int>dp(target + 1, 0);
+	dp[0] = 1;
+	int n = nums.size();
+	for (int i = 1; i <= target; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if (i>=nums[j])
+			{
+				dp[i] += dp[i - nums[j]];
+			}
+			else break;
+		}
+	}
+	return dp[target];
+}
+
+//recrusive memory based
+
+int combinationSum4Recrusive(vector<int>& nums, int target,vector<int>& dp)
+{
+	if (dp[target] != -1)return dp[target];
+	int res = 0;
+	for (int i = 0; i < nums.size(); ++i)
+	{
+		if (target >= nums[i])
+		{
+			res += combinationSum4Recrusive(nums, target - nums[i], dp);
+		}
+		else break;
+	}
+	dp[target] = res;
+	return res;
+	
+}
+
+int combinationSum4(vector<int>& nums, int target) {
+	sort(nums.begin(), nums.end());
+	vector<int>dp(target + 1, -1); 
+	dp[0] = 1;
+	return combinationSum4Recrusive(nums, target,dp);
+}
+
+
+//221 maximal square
+
+/*
+Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+
+For example, given the following matrix:
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+Return 4.
+*/
+//taobupt
+int maximalSquare(vector<vector<char>>& matrix) {
+	if (matrix.empty() || matrix[0].empty())return 0;
+	int m = matrix.size(), n = matrix[0].size();
+	vector<vector<int>>dp(m,vector<int>(n,0));
+	int edge = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (matrix[0][i] == '1')
+		{
+			dp[0][i] = 1;
+			edge = 1;
+		}
+	}
+	for (int i = 0; i < m; ++i)
+	{
+		if (matrix[i][0] == '1')
+		{
+			dp[i][0] = 1;
+			edge = 1;
+		}
+	}
+	for (int i = 1; i < m; ++i)
+	{
+		for (int j = 1; j < n; ++j)
+		{
+			dp[i][j] = matrix[i][j] == '0' ? 0 : min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1])) + 1;
+			edge = max(edge, dp[i][j]);
+		}
+	}
+	return edge*edge;
+
+}
+
+//O(n) space
+//
+int maximalSquare(vector<vector<char>>& matrix) {
+	if (matrix.empty() || matrix[0].empty())return 0;
+	int m = matrix.size(), n = matrix[0].size();
+	vector<int>pre(m, 0);
+	vector<int>cur(m, 0);
+	int edge = 0;
+	for (int i = 0; i < m; ++i)
+	{
+		pre[i] = matrix[i][0] - '0';
+		edge = max(edge, pre[i]);
+	}
+	for (int j = 1; j < n; ++j)
+	{
+		cur[0] = matrix[0][j] - '0';
+		edge = max(edge, cur[0]);
+		for (int i = 1; i < m; ++i)
+		{
+			if (matrix[i][j] == '1')
+			{
+				cur[i] = min(cur[i - 1], min(pre[i], pre[i - 1])) + 1;
+				edge = max(cur[i], edge);
+			}
+		}
+		swap(pre, cur);
+		fill(cur.begin(), cur.end(), 0);
+	}
+	return edge*edge;
+}
+
+//17 letter combinations of a phone number
+/*
+Given a digit string, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+*/
+
+
+//discuss is interesting
+void dfs17(vector<string>& res, string& path, string digits, unordered_map<char, string>& mp, int pos)
+{
+	if (pos == digits.size()&& digits.size()==path.size())
+	{
+		res.push_back(path);
+		return;
+	}
+	else if (pos > digits.size() || path.size() > digits.size())return;
+	for (int i = pos; i < digits.size(); ++i)
+	{
+		for (int j = 0; j < mp[digits[i]].size(); ++j)
+		{
+			path.push_back(mp[digits[i]][j]);
+			dfs17(res, path, digits, mp, pos + 1);
+			path.pop_back();
+		}
+	}
+}
+vector<string> letterCombinations(string digits) {
+	//array is faster
+	unordered_map<char, string>mp = { { '2', "abc" }, { '3', "def" }, { '4', "ghi" }, { '5', "jkl" }, { '6', "mno" }, { '7', "pqrs" }, { '8', "tuv" }, { '9', "wxyz" } };
+	vector<string>res;
+	string path;
+	dfs17(res, path, digits, mp, 0);
+	return res;
+}
+
+//215 Kth largest element in an array
+/*
+Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+For example,
+Given [3,2,1,5,6,4] and k = 2, return 5.
+
+Note:
+You may assume k is always valid, 1 ≤ k ≤ array's length.
+*/
+
+//@taobupt
+int findKthLargest(vector<int>& nums, int k) {
+	priority_queue<int, vector<int>, greater<int>>pq;
+	int i = 0,n=nums.size();
+	while (i < k)
+	{
+		pq.push(nums[i++]);
+	}
+	while (i < n)
+	{
+		if (pq.top() < nums[i])
+		{
+			pq.pop();
+			pq.push(nums[i]);
+		}
+		i++;
+	}
+	return pq.top();
+}
+
+
+int partition(vector<int>&nums, int left, int right)
+{
+	int begin = left, end = right, key = nums[left];
+	while (begin < end)
+	{
+		while (begin < end && nums[end] >= key)--end;
+		nums[begin] = nums[end];
+		while (begin < end && nums[begin] <= key)begin++;
+		nums[end] = nums[begin];
+	}
+	nums[begin] = key;
+	return begin;
+}
+
+int findKthMin(vector<int> A, int start, int end, int k){
+	int i = partition(A, start, end);
+	if (i + 1 == k){
+		return A[i];
+	}
+	else if (i + 1<k){
+		return findKthMin(A, i + 1, end, k);
+	}
+	else{
+		return findKthMin(A, start, i - 1, k);
+	}
+}
+// see the discuss
+int findKthLargest(vector<int>& nums, int k)
+{
+	int n = nums.size();
+	return findKthMin(nums, 0, n - 1, n - k + 1);
+}
+
 
 
 
