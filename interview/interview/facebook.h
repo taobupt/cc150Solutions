@@ -1704,6 +1704,1007 @@ int hIndexII(vector<int>& citations)
 	return len - left;
 }
 
+int dx[4] = { 1,-1,0,0 };
+int dy[4] = { 0,0,1,-1 };
+
+// hard part
+
+// lt 84
+//@taobupt
+
+/*
+Given n non-negative integers representing the histogram's bar height where the width of each bar is 1, find the area of largest rectangle in the histogram.
+
+
+Above is a histogram where width of each bar is 1, given height = [2,1,5,6,2,3].
+
+
+The largest rectangle is shown in the shaded area, which has area = 10 unit.
+
+For example,
+Given heights = [2,1,5,6,2,3],
+return 10.
+*/
+int largestRectangleArea(vector<int>& heights) {
+	heights.push_back(0);//sentineal;
+	int res = 0, n = heights.size();
+	stack<int>dq;
+	for (int i = 0;i < n;++i)
+	{
+		while (!dq.empty() && heights[dq.top()]>heights[i])
+		{
+			int h = heights[dq.top()];
+			dq.pop();
+			int index = dq.empty() ? -1 : dq.top();
+			res = max(res, h*(i - 1 - index));
+		}
+		dq.push(i);
+	}
+	return res;
+}
+
+//lt 316 remove duplicate letters
+
+/*
+Given a string which contains only lowercase letters, remove duplicate letters so that every letter appear once and only once. You must make sure your result is the smallest in lexicographical order among all possible results.
+
+Example:
+Given "bcabc"
+Return "abc"
+
+Given "cbacdcbc"
+Return "acdb"
+*/
+//@taobupt
+string removeDuplicateLetters(string s) {
+	string res;
+	int cnt[26] = { 0 };
+	bool vis[26] = { false };
+	for (char c : s)cnt[c - 'a']++;
+	for (char c : s)
+	{
+		cnt[c - 'a']--;
+		if (vis[c - 'a'])continue;
+		while (!res.empty() && cnt[res.back() - 'a'] && res.back() > c)
+		{
+			vis[res.back() - 'a'] = false;
+			res.pop_back();
+		}
+		res.push_back(c);
+		vis[c - 'a'] = true;
+	}
+	return res;
+}
+
+//lt 85 maximal rectangle in matrix
+/*
+Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+
+For example, given the following matrix:
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+Return 6.
+*/
+
+//@taobupt
+
+int maximalRectangle(vector<vector<char>>& matrix) {
+	if (matrix.empty() || matrix[0].empty())return false;
+	int m = matrix.size(), n = matrix[0].size();
+	vector<vector<int>>dp(m, vector<int>(n, 0));
+	int res = 0;
+	for (int i = 0;i < n;++i)dp[0][i] = matrix[0][i] == '1' ? 1 : 0;
+	for (int i = 1;i < m;++i)
+	{
+		for (int j = 0;j < n;++j)
+		{
+			dp[i][j] = matrix[i][j] == '0' ? 0 : dp[i - 1][j] + 1;
+		}
+		res = max(res, largestRectangleArea(dp[i]));
+	}
+	res = max(res, largestRectangleArea(dp[0]));
+	return res;
+}
+
+//LT 116&&117
+/*
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+
+Initially, all next pointers are set to NULL.
+
+Note:
+
+You may only use constant extra space.
+You may assume that it is a perfect binary tree (ie, all leaves are at the same level, and every parent has two children).
+For example,
+Given the following perfect binary tree,
+1
+/  \
+2    3
+/ \  / \
+4  5  6  7
+After calling your function, the tree should look like:
+1 -> NULL
+/  \
+2 -> 3 -> NULL
+/ \  / \
+4->5->6->7 -> NULL
+*/
+
+//@taobupt
+void connect(TreeLinkNode *root) {
+	if (root == NULL)return;
+	queue<TreeLinkNode*>q;
+	TreeLinkNode* node = NULL;
+	q.push(root);
+	while (!q.empty())
+	{
+		int size = q.size();
+		while (size--)
+		{
+			node = q.front();
+			q.pop();
+			if (size != 0)node->next = q.front();
+			if (node->left)q.push(node->left);
+			if (node->right)q.push(node->right);
+		}
+	}
+}
+
+void connect116(TreeLinkNode *root) {
+	if (root == NULL)return;
+	TreeLinkNode* pre = root;
+	TreeLinkNode* cur = NULL;
+	while (pre->left)
+	{
+		cur = pre;
+		while (cur)
+		{
+			cur->left->next = cur->right;
+			if (cur->next)cur->right->next = cur->next->left;
+			cur = cur->next;
+		}
+		pre = pre->left;
+	}
+}
+
+void connect117(TreeLinkNode* root)
+{
+	TreeLinkNode* nextHead = new TreeLinkNode(0);
+	nextHead->next = root;
+	while (nextHead->next)
+	{
+		TreeLinkNode* tail = nextHead;
+		TreeLinkNode* n = nextHead->next;
+		nextHead->next = NULL;
+		for (;n != NULL;n = n->next)
+		{
+			if (n->left)
+			{
+				tail->next = n->left;
+				tail = tail->next;
+			}
+			if (n->right)
+			{
+				tail->next = n->right;
+				tail = tail->next;
+			}
+		}
+	}
+}
+
+// lt 33 search in a sorted array
+/*
+Suppose a sorted array is rotated at some pivot unknown to you beforehand.
+
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+
+You are given a target value to search. If found in the array return its index, otherwise return -1.
+
+You may assume no duplicate exists in the array.
+*/
+//taobupt
+int search(vector<int>& nums, int target) {
+	int begin = 0, n = nums.size(), end = n - 1, mid = 0;
+	while (begin<end)
+	{
+		mid = begin + (end - begin) / 2;
+		if (nums[mid] == target)return mid;
+		if (nums[mid]>nums[end])
+		{
+			if (nums[mid]>target && target >= nums[begin])end = mid;
+			else begin = mid + 1;
+		}
+		else if (nums[mid]<nums[end])
+		{
+			if (nums[mid]<target && target <= nums[end])begin = mid + 1;
+			else end = mid;
+		}
+	}
+	return nums[begin] == target ? begin : -1;
+}
+
+//56 merge interval
+/*
+Given a collection of intervals, merge all overlapping intervals.
+
+For example,
+Given [1,3],[2,6],[8,10],[15,18],
+return [1,6],[8,10],[15,18].
+*/
+//@taobupt
+
+vector<Interval>merge(vector<Interval>& intervals)
+{
+	sort(intervals.begin(), intervals.end(), [](Interval a, Interval b) {return a.start < b.start;});
+	int n = intervals.size();
+	vector<Interval>res;
+	if (n == 0)return res;
+	res.push_back(intervals[0]);
+	for (int i = 1;i < n;++i)
+	{
+		if (res.back().end < intervals[i].start)res.push_back(intervals[i]);
+		else
+		{
+			res.back().end = max(res.back().end, intervals[i].end);
+		}
+	}
+	return res;
+}
+
+// lt 57 insert interval
+//@taobupt
+/*
+Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+
+You may assume that the intervals were initially sorted according to their start times.
+
+Example 1:
+Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9].
+
+Example 2:
+Given [1,2],[3,5],[6,7],[8,10],[12,16], insert and merge [4,9] in as [1,2],[3,10],[12,16].
+
+This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10]
+*/
+
+vector<Interval> insert(vector<Interval>& intervals, Interval newInterval)
+{
+	vector<Interval>res;
+	int n = intervals.size(), i = 0;
+	while (i < n && intervals[i].end < newInterval.start)res.push_back(intervals[i++]);
+	while (i < n && intervals[i].start <= newInterval.end)
+	{
+		newInterval.start = min(intervals[i].start, newInterval.start);
+		newInterval.end = max(intervals[i++].end, newInterval.end);
+	}
+	res.push_back(newInterval);
+	while (i < n)res.push_back(intervals[i++]);
+	return res;
+}
+
+
+//lt 76 minimum window substring
+/*
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+For example,
+S = "ADOBECODEBANC"
+T = "ABC"
+Minimum window is "BANC".
+*/
+//@taobupt
+string minWindow(string s, string t) {
+	int left = 0, right = 0, minStart = 0, minLength = INT_MAX, count = t.size(),n=s.size();
+	//unordered_map<char, int>mp;
+	int mp[128] = { 0 };
+	for (char c : t)mp[c]++;
+	while(right<n)
+	{
+		if (mp[s[right]]>0)count--;
+		mp[s[right]]--;
+		right++;
+		while (count == 0)
+		{
+			if (minLength < right-left)// because the end has already increased by 1, so , it should be right-left
+			{
+				minStart = left;
+				minLength = right - left;
+			}
+			mp[s[left]]++;
+			if (mp[s[left]]>0)count++;
+			left++;
+		}
+	}
+	return minLength == INT_MAX ? "" : s.substr(minStart, minLength);
+}
+
+
+//297 serialize and deserize binary tree
+//@taobupt
+
+/*
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+For example, you may serialize the following tree
+
+1
+/ \
+2   3
+/ \
+4   5
+as "[1,2,3,null,null,4,5]", just the same as how LeetCode OJ serializes a binary tree. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.
+Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.
+*/
+
+class Codec1 {
+public:
+
+	// Encodes a tree to a single string.
+	vector<string> serialize(TreeNode* root) {
+		vector<string>res;
+		if (root == NULL)return res;
+		queue<TreeNode*>q;
+		q.push(root);
+		TreeNode* node = NULL;
+		while (!q.empty())
+		{
+			node = q.front();
+			q.pop();
+			if (node)
+			{
+				res.push_back(to_string(node->val));
+				q.push(node->left);
+				q.push(node->right);
+			}
+			else res.push_back("#");
+		}
+		return res;
+	}
+
+	// Decodes your encoded data to tree.
+	TreeNode* deserialize(vector<string> data) {
+		if (data.empty() || data[0] == "#")return NULL;
+		TreeNode* root = new TreeNode(stoi(data[0]));
+		TreeNode* cur = root;
+		queue<TreeNode*>q;
+		int n = data.size();
+		for (int i = 1;i < n;++i)
+		{
+			if (data[i] == "#")
+			{
+				if (!q.empty() &&(i%2==0))
+				{
+					cur = q.front();
+					q.pop();
+				}
+				continue;
+			}
+			TreeNode* newNode = new TreeNode(stoi(data[i]));
+			q.push(newNode);
+			if (i & 0x1)cur->left = newNode;
+			else
+			{
+				cur->right = newNode;
+				cur = q.front();
+				q.pop();
+			}
+		}
+		return root;
+	}
+};
+
+//recrusive way to do this
+class Codec {
+public:
+
+	// Encodes a tree to a single string.
+	string serialize(TreeNode* root) {
+		ostringstream out;
+		serialize(root, out);
+		return out.str();
+	}
+	
+
+	// Decodes your encoded data to tree.
+	TreeNode* deserialize(string data) {
+		istringstream in(data);
+		return deserialize(in);
+	}
+private:
+	void serialize(TreeNode* root, ostringstream& out)
+	{
+		if (root)
+		{
+			out << root->val << ' ';
+			serialize(root->left, out);
+			serialize(root->right, out);
+		}
+		else out << "# ";
+	}
+	TreeNode* deserialize(istringstream& in)
+	{
+		string val;
+		in >> val;
+		if (val == "#")return nullptr;
+		TreeNode* root = new TreeNode(stoi(val));
+		root->left = deserialize(in);
+		root->right = deserialize(in);
+		return root;
+	}
+};
+
+//380 insert delete getRandom O(1)
+/*
+Design a data structure that supports all following operations in average O(1) time.
+
+insert(val): Inserts an item val to the set if not already present.
+remove(val): Removes an item val from the set if present.
+getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
+Example:
+
+// Init an empty set.
+RandomizedSet randomSet = new RandomizedSet();
+
+// Inserts 1 to the set. Returns true as 1 was inserted successfully.
+randomSet.insert(1);
+
+// Returns false as 2 does not exist in the set.
+randomSet.remove(2);
+
+// Inserts 2 to the set, returns true. Set now contains [1,2].
+randomSet.insert(2);
+
+// getRandom should return either 1 or 2 randomly.
+randomSet.getRandom();
+
+// Removes 1 from the set, returns true. Set now contains [2].
+randomSet.remove(1);
+
+// 2 was already in the set, so return false.
+randomSet.insert(2);
+
+// Since 1 is the only number in the set, getRandom always return 1.
+randomSet.getRandom();
+*/
+//@taobupt
+
+
+// followup multiset
+class RandomizedSet {
+public:
+	/** Initialize your data structure here. */
+	RandomizedSet() {
+
+	}
+
+	/** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+	bool insert(int val) {
+		if (mp.find(val) != mp.end())return false;
+		else
+		{
+			mp[val] = res.size();
+			res.push_back(val);
+			return true;
+		}
+	}
+
+	/** Removes a value from the set. Returns true if the set contained the specified element. */
+	bool remove(int val) {
+		if (mp.find(val) == mp.end())return false;
+		else
+		{
+			res[mp[val]] = res.back();
+			mp[res.back()] = mp[val];
+			res.pop_back();
+			mp.erase(val);
+			return true;
+		}
+	}
+
+	/** Get a random element from the set. */
+	int getRandom() {
+		return res[rand() % res.size()];
+	}
+private:
+	vector<int>res;
+	unordered_map<int, int>mp;
+};
+
+//273 integer to english words
+//@taobupt
+/*
+Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 231 - 1.
+
+For example,
+123 -> "One Hundred Twenty Three"
+12345 -> "Twelve Thousand Three Hundred Forty Five"
+1234567 -> "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+*/
+
+string digits[20] = { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+string tens[10] = { "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+
+string int2string(int n)
+{
+	if (n >= 1000000000)
+	{
+		return int2string(n / 1000000000) + " Billion" + int2string(n % 1000000000);
+	}
+	else if (n >= 1000000)
+	{
+		return int2string(n / 1000000) + " Million" + int2string(n % 1000000);
+	}
+	else if (n >= 1000)
+	{
+		return int2string(n / 1000) + " Thousand" + int2string(n % 1000);
+	}
+	else if (n >= 100)
+	{
+		return int2string(n / 100) + " Hundred" + int2string(n % 100);
+	}
+	else if (n >= 20)
+	{
+		return " " + tens[n / 10] + int2string(n % 10);
+	}
+	else if (n >= 1)
+	{
+		return " " + digits[n];
+	}
+	else return "";
+}
+string numberToWords(int num)
+{
+	if (num == 0)return "Zero";
+	else
+	{
+		string ret = int2string(num);
+		return ret.substr(1);
+	}
+}
+
+// 269 alien dictionary
+
+/*
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+
+For example,
+Given the following words in dictionary,
+
+[
+"wrt",
+"wrf",
+"er",
+"ett",
+"rftt"
+]
+The correct order is: "wertf".
+*/
+//@taobupt
+string alienOrder(vector<string>& words) {
+	unordered_map<char, int>indegree;
+	unordered_map<char, unordered_set<char>>adj;
+	string res;
+	if (words.empty())return res;
+	int n = words.size();
+	for (string str : words)
+	{
+		for (char c : str)indegree[c] = 0;
+	}
+	for (int i = 0;i < n - 1;++i)
+	{
+		string cur = words[i];
+		string next = words[i + 1];
+		int length = min(cur.size(), next.size());
+		for (int j = 0;j < length;++j)
+		{
+			if (cur[j] != next[j])
+			{
+				if (adj[cur[j]].find(next[j]) == adj[cur[j]].end())
+				{
+					adj[cur[j]].insert(next[j]);
+					indegree[next[j]]++;
+				}
+				break;
+			}
+			if (j == next.size() - 1 && cur.size() > next.size()) { // "abcd" -> "ab"
+				return "";
+			}
+		}
+
+	}
+	queue<char>q;
+	for (unordered_map<char, int>::iterator it = indegree.begin();it != indegree.end();++it)if (it->second == 0)q.push(it->first);
+	int count = 0;
+	char c = ' ';
+	while (!q.empty())
+	{
+		c = q.front();
+		res.push_back(c);
+		q.pop();
+		count++;
+		for (char it : adj[c])
+		{
+			--indegree[it];
+			if (indegree[it] == 0)q.push(it);
+		}
+	}
+
+	return count == indegree.size() ? res : "";
+}
+
+
+//282 expression add operator
+/*
+Given a string that contains only digits 0-9 and a target value, return all possibilities to add binary operators (not unary) +, -, or * between the digits so they evaluate to the target value.
+
+Examples:
+"123", 6 -> ["1+2+3", "1*2*3"]
+"232", 8 -> ["2*3+2", "2+3*2"]
+"105", 5 -> ["1*0+5","10-5"]
+"00", 0 -> ["0+0", "0-0", "0*0"]
+"3456237490", 9191 -> []
+*/
+//taobupt
+
+void dfs282(vector<string>& res, string path, string num, int target, long pv, long cv, char oper, int pos)
+{
+	if (cv == target && pos == num.size())
+	{
+		res.push_back(path);
+		return;
+	}
+	for (int i = pos + 1;i <= num.size();++i)
+	{
+		string sub = num.substr(pos, i - pos);
+		long now = stol(sub);
+		if (to_string(now) != sub)continue;
+		dfs282(res, path + "+" + sub, num, target, now, cv + now, '+', i);
+		dfs282(res, path + "-" + sub, num, target, now, cv - now, '-', i);
+		dfs282(res, path + "*" + sub, num, target, pv*now, (oper=='-')?cv+pv-pv*now:((oper=='+')?cv-pv+pv*now:pv*now), oper, i);
+	}
+}
+vector<string>addOperator(string num, int target)
+{
+	vector<string>res;
+	string path;
+	int n = num.size();
+	if (num.empty())return res;
+	for (int i = 1;i <= n;++i)
+	{
+		string sub = num.substr(0, i);
+		long cur = stol(sub);
+		if (to_string(cur) != sub)continue;
+		dfs282(res, path + sub, num, target, cur, cur, '#', i);
+	}
+}
+
+
+
+// 79 word seach
+/*
+Given a 2D board and a word, find if the word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+For example,
+Given board =
+
+[
+['A','B','C','E'],
+['S','F','C','S'],
+['A','D','E','E']
+]
+*/
+//@taobupt
+
+bool dfs79(vector<vector<char>>& board, string word, int pos, int dx[], int dy[], int x, int y, vector<vector<bool>>& vis)
+{
+	if (pos == word.size())return true;
+	for (int k = 0;k < 4;++k)
+	{
+		int nx = x + dx[k],ny = y + dy[k];
+		if (nx < 0 || nx >= board.size() || ny<0 || ny>=board[0].size() || vis[nx][ny] || word[pos] != board[nx][ny])continue;
+		vis[nx][ny] = true;
+		if (dfs79(board, word, pos + 1, dx, dy, nx, ny, vis))return true;
+		vis[nx][ny] = false;
+	}
+	return false;
+}
+bool exist(vector<vector<char>>& board, string word) {
+	if (board.empty() || board[0].empty())return false;
+	if (word.empty())return true;
+	int m = board.size(), n = board[0].size();
+	int dx[4] = { 1,-1,0,0 }, dy[4] = { 0,0,1,-1 };
+	vector<vector<bool>>vis(m, vector<bool>(n, false));
+	for (int i = 0;i < m;++i)
+	{
+		for (int j = 0;j < n;++j)
+		{
+			if (word[0] == board[i][j] && !vis[i][j])
+			{
+				vis[i][j] = true;
+				if (dfs79(board, word, 1, dx, dy, i, j, vis))return true;
+				vis[i][j] = false;
+			}
+		}
+	}
+	return false;
+}
+
+//208 implement trie Prefix tree
+/*
+Implement a trie with insert, search, and startsWith methods.
+
+*/
+
+//@taobupt
+
+class TrieNode {
+public:
+	// Initialize your data structure here.
+	bool isEnd;
+	char content;
+	vector<TrieNode*>subNode;
+	TrieNode* getSubNode(char c)
+	{
+		if (!subNode.empty())
+		{
+			for (auto it : subNode)
+			{
+				if (it->content == c)return it;
+			}
+		}return nullptr;
+	}
+	TrieNode(char c = ' ') :content(c), isEnd(false) {}
+	~TrieNode()
+	{
+		for (auto ptr : subNode)delete ptr;
+	}
+};
+
+class Trie {
+public:
+	Trie() {
+		root = new TrieNode();
+	}
+
+	// Inserts a word into the trie.
+	void insert(string word) {
+		if (search(word))return;
+		TrieNode* cur = root;
+		for (char c : word)
+		{
+			TrieNode* node = cur->getSubNode(c);
+			if (node == nullptr)
+			{
+				node = new TrieNode(c);
+				cur->subNode.push_back(node);
+			}
+			cur = node;
+		}
+		cur->isEnd = true;
+	}
+
+	// Returns if the word is in the trie.
+	bool search(string word) {
+		TrieNode* cur = root;
+		for (char c : word)
+		{
+			TrieNode* node = cur->getSubNode(c);
+			if (node == nullptr)return false;
+			cur = node;
+		}
+		return cur->isEnd;
+	}
+
+	// Returns if there is any word in the trie
+	// that starts with the given prefix.
+	bool startsWith(string prefix) {
+		TrieNode* cur = root;
+		for (char c : prefix)
+		{
+			TrieNode* node = cur->getSubNode(c);
+			if (node == nullptr)return false;
+			cur = node;
+		}
+		return true;
+	}
+	TrieNode* getRoot()
+	{
+		return root;
+	}
+private:
+	TrieNode* root;
+};
+
+//212 word search II
+/*
+Given a 2D board and a list of words from the dictionary, find all words in the board.
+
+Each word must be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+For example,
+Given words = ["oath","pea","eat","rain"] and board =
+
+[
+['o','a','a','n'],
+['e','t','a','e'],
+['i','h','k','r'],
+['i','f','l','v']
+]
+Return ["eat","oath"].
+*/
+
+//@taobupt
+
+void dfs212(vector<vector<char>>& board, TrieNode* root, int dx[], int dy[], int i, int j, vector<vector<bool>> &vis, set<string>& result_set, string word)
+{
+	if (root->isEnd)
+	{
+		result_set.insert(word);
+		//return;
+	}
+	for (int k = 0; k < 4; ++k)
+	{
+		int nx = dx[k] + i, ny = dy[k] + j;
+		if (nx < 0 || nx >= (int)board.size() || ny < 0 || ny >= (int)board[0].size() || vis[nx][ny] || root->getNode(board[nx][ny]) == nullptr)continue;
+		vis[nx][ny] = true;
+		word.push_back(board[nx][ny]);
+		dfs212(board, root->getSubNode(board[nx][ny]), dx, dy, nx, ny, vis, result_set, word);
+		word.pop_back();
+		vis[nx][ny] = false;
+	}
+
+}
+vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+	vector<string>res;
+	if (board.empty() || board[0].empty() | words.empty())return res;
+	int m = board.size(), n = board[0].size();
+	int dx[4] = { 1, -1, 0, 0 }, dy[4] = { 0, 0, 1, -1 };
+	vector<vector<bool>>vis(m, vector<bool>(n, 0));
+	set<string>result_set;
+	string word;
+	Trie t;
+	for (string word : words)t.insert(word);
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if (t.getRoot()->getSubNode(board[i][j]) != nullptr && !vis[i][j])
+			{
+				vis[i][j] = true;
+				dfs212(board, t.getRoot()->getSubNode(board[i][j]), dx, dy, i, j, vis, result_set, word + board[i][j]);
+				vis[i][j] = false;
+			}
+		}
+	}
+	for (string x : result_set)res.push_back(x);
+	return res;
+}
+
+// 398  random pick index
+/*
+Given an array of integers with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
+
+Note:
+The array size can be very large. Solution that uses too much extra space will not pass the judge.
+
+*/
+
+class Solution {
+public:
+	vector<int>num;
+	Solution(vector<int> nums) {
+		num = nums;
+		srand(time(NULL));
+	}
+
+	int pick(int target) {
+		int cnt = 0;
+		int index = -1;
+		for (int i = 0;i<num.size();++i)
+		{
+			if (num[i] == target)
+			{
+				cnt++;
+				if (index == -1)index = i;
+				else
+				{
+					if (rand() % cnt == 0)index = i;
+				}
+			}
+		}
+		return index;
+	}
+};
+
+// 71 simplify path
+/*
+given an absolute path for a file ,simplify it
+*/
+
+//@taobupt
+
+string simplifyPath(string path)
+{
+	vector<string>res;
+	stringstream ss(path);
+	string tmp;
+	while (getline(ss, tmp, '/'))
+	{
+		if (tmp == "" || tmp == ".")continue;
+		else if (!res.empty() && tmp == "..")res.pop_back();
+		else if (tmp != "..")res.push_back(tmp);
+	}
+	string ans;
+	for (string str : res)ans += "/" + str;
+	return ans.empty() ? "/" : ans;
+}
+
+
+//200 number of islands
+/*
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+
+11110
+11010
+11000
+00000
+Answer: 1
+
+Example 2:
+
+11000
+11000
+00100
+00011
+Answer: 3
+
+*/
+
+//@taobupt
+
+void dfs200(vector<vector<char>>& grid, int x, int y, vector<vector<bool>>& vis)
+{
+	for (int k = 0;k < 4;++k)
+	{
+		int nx = x + dx[k], ny = y + dy[k];
+		if (nx < 0 || nx >= grid.size() || ny < 0 || ny >= grid[0].size() || vis[nx][ny] || grid[nx][ny] == '0')continue;
+		vis[nx][ny] = true;
+		dfs200(grid, nx, ny, vis);
+	}
+}
+int numIslands(vector<vector<char>>& grid) {
+	if (grid.empty() || grid[0].empty())return 0;
+	int m = grid.size(), n = grid[0].size();
+	int res = 0;
+	vector<vector<bool>>vis(m, vector<bool>(n, false));
+	for (int i = 0;i < m;++i)
+	{
+		for (int j = 0;j < n;++j)
+		{
+			if (grid[i][j] == '1' && !vis[i][j])
+			{
+				vis[i][j] = true;
+				dfs200(grid, i, j, vis);
+				res++;
+			}
+		}
+	}
+	return res;
+}
+
+
+
+
 
 
 
