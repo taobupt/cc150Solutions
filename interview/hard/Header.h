@@ -1,0 +1,21 @@
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+#include<unordered_set>
+#include<map>
+#include<stack>
+#include<queue>
+#include<list>
+#include<algorithm>
+#include<functional>
+#include<fstream>
+#include<limits>
+#include<cctype>
+#include<set>
+#include<string>
+#include<stdlib.h>
+#include<sstream>
+#include<numeric>
+#include<cstdint>
+#include<assert.h>
+using namespace std;

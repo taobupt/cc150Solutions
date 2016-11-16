@@ -1,0 +1,684 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\easy">
+      <UniqueIdentifier>{9bc95312-d2d1-4dcd-95ad-63b46add3c7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\medium">
+      <UniqueIdentifier>{d3c28718-c591-4643-afed-34ed1dacb965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hard">
+      <UniqueIdentifier>{c994033b-17a9-494f-95ff-ed2062d7b862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hackerrank">
+      <UniqueIdentifier>{bd8cd72c-fb7c-429b-8b12-3a54ea57b975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SortAlgorithms">
+      <UniqueIdentifier>{56175030-d275-4dc4-b51b-c4189f66af1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graph">
+      <UniqueIdentifier>{295a0e56-2388-4229-9741-0279ba8122ef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="1TwoSum.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="6ZigZagConversion.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="7ReverseInteger.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="9palindrome.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="13RomanToIntegers.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="14longestCommonPrefix.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="8atoi.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="19RemoveNthNodeFromList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="20validParenthesis.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="21mergeTwoSortedLists.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="24swapNodesinPairs.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="26RemoveDuplicatesFromSortedArray.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="27RemoveElement.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="28implementstrStr.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="58lengthOfLastWord.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="66pluseOne.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="67Addbinary.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="70ClimbStairs.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="83RemoveDuplicateFromSortedList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="88mergeSortedArray.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="100sameTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="101SysmetricTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="102BinrayTreeLevelOrdreTraversal.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="104MaximumDepthofBinaryTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="38CountAndSay.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="36ValidSudoku.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="81searchInRotatedSortedArray.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="79wordSearch.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="advance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="107BinaryTreelevelOrder.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="110BalancedBinaryTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="111MinimumDepthOfBinaryTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="112PathSum.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="125ValidPalindromeh.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="121bestTimeToBuyStock.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="118PascalTriangle.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="119Pascal%27s Triangle II.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="86PartitionList.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="89GrayCode.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="90subsetsII.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="98validateBST.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="96uniqueBinarySearchTrees.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="136singleNumber.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="141linkedListCycle.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="155minstack.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="168excelSheetColumnTitle.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="160intersectionOfTwoLinkedList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="169majorityElement.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="171excelSheetColumnNumber.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="172factorialTraillingZeros.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="DigitalImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="105constructBSTPreorderANDInorder.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="106ConstructBinaryTreeFromInordreandPost.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="108convertSortedArrayToBST.H">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="109ConvertedSortedListToBST.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="114FlattenTree.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="113pathsumII.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="116PopulatingNextRightPointersInEachNode.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="120Triangle.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="122BestTimeToBuyAndSellStock.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="129SumRootToLeafNumbers.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="189rotateArray.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="190ReverseBits.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="202HappyNumber.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="203RemoveLinkedListElements.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="206ReverseList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="205isomorphicStrings.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="204countPrimes.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="217containsDuplicates.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="219ContainsDuplicatesII.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="223Rectangle.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="225implementStackUsingQueues.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="226invertTree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="231PowerOfTwo.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="232UsingStackToCreateQueue.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="234palindromLinkedList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="235LcmBST.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="237DeleteNodeinLinkedList.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="242ValidAnagrams.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="257binaryTreePaht.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="258AddDigits.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="263uglyNumber.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="278FirstBadVersion.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="127wordladder.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="416partitionEqualSubsetSum.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="130surroundRegions.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="134GasStation.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="133cloneGraph.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="131partitionPalindrom.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="142cycleII.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="137SingleNumberII.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="143reorderList.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="144preorderTraversel.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="283moveZeros.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="292NimGame.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="290wordPattern.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="344reverseString.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="342PourOfFour.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="326powrerOfThree.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="303RangeSumQuery.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="299bullsAndCows.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="345ReverseVowels.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="415Addstring.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="409LongestPalindrome.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="371SumOfTwoIntegers.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="383RansomNote.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="387FirstUniqueCharacterInastring.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="389findtheDifference.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="153FindtheMinimunIntheSortedArray.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="154findMiniumElements.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="147InsertionSort.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="148sortList.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="152MinimumProductArray.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="150evaluateRevesePolishNotation.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="151ReverseWordsInaString.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="162findPeakElement.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="200numberOfIslands.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="187repeatedDNA.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="173BSTIterator.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="179LargestNumber.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="167twoSumII.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="166Fraction to Recurring Decimal.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="207courseSchedule.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="208ImplementTrie.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="211AddAndSearchWord.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="41findFirstMissingPositive.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="42TrapRainWater.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="23mergeKsortedLists.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="25ReverseNodesInKGroup.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="30SubstringWithConcatenationOfAllWords.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="76MinimumWindowSubstring.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="52Nqueens.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="51NqueenI.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="72EditDistance.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="84LargestHistorgam.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="reverseList.h">
+      <Filter>Header Files\hackerrank</Filter>
+    </ClInclude>
+    <ClInclude Include="239slidingWindowMaximum.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="VerifyPreorder.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="321createMaximumNumber.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="97InterleavingString.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="99RecoverBST.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="115NumDistinct.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="123BestTimeToBuyAndSellStockIII.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="124maxPathSum.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="126WordLadder.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="128LongestConsecutiveSequence.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="mergeList.h">
+      <Filter>Header Files\hackerrank</Filter>
+    </ClInclude>
+    <ClInclude Include="char.h">
+      <Filter>Header Files\hackerrank</Filter>
+    </ClInclude>
+    <ClInclude Include="145postorder.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="135candy.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="138copylistwithRandomPointer.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="149maxPointsOnALine.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="140WordBreakII.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="146LRU.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="132PalindromePartition.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="164RadixSort.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="countingsort.h">
+      <Filter>Header Files\SortAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="RadixSort.h">
+      <Filter>Header Files\SortAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="214shorestPalindrome.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="224BasicCalculator.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="227BasicCalculator.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="297SerializeANDDeserialize.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="212WordSearchII.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="316removeDuplicateLetters.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="330patchingArray.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="312burstBalloons.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="315countofSmallerNumbersAfterSelf.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="329longestIncreasingPathInAMatrix.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="295findMedianFromDataStream.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="removeInvalidParentheses.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="282ExpressionAddOperator.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="210CourseSchedule.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tarjan.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="TopologicalSort.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Kruskal.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="LCATarjan.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="332ReconstructItinerary.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="314VerticalOrder.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="298BinaryTreeLongestConsecutiveSequence.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="159LongestSubstringWithAtMostTwoDistinctCharacters.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="340LongestSubstringWithAtMostKDistinctCharacters.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="424LongestRepeatingCharacterReplacement.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="281ZigZagIterator.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="271EncodeAndDecode.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="Huffman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="348DesignTic-Tac-Toe.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="2593sumSmaller.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="305NumberofIslandii.H">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="351AndroidPatterns.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="209BuyAndSellWithCoolDown.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="10RegularExpression.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="CopyOnWrite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Codec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="333LargestBST.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="85MaximalRectangle.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="56mergeInterval.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="272CloestBinarySearchTreeII.h">
+      <Filter>Header Files\hard</Filter>
+    </ClInclude>
+    <ClInclude Include="228summaryRange.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="163MissingRanges.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="271EncodeAndDecodeStrings.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="leetcode280WiggleSort.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="346MovingAverageFromDataStream.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="318MaxiumProductOfWordLength.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="173BinarySearchTreeIterator.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="240SerachA2DMatrix.h">
+      <Filter>Header Files\medium</Filter>
+    </ClInclude>
+    <ClInclude Include="276PaintFence.h">
+      <Filter>Header Files\easy</Filter>
+    </ClInclude>
+    <ClInclude Include="Prim.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="bellman_ford.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Dijkstra.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Floyd.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="MaxFlow.h">
+      <Filter>Header Files\graph</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
