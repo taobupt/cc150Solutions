@@ -1,4 +1,22 @@
-﻿#include"Header.h"
+﻿#include<iostream>
+#include<stdio.h>
+#include<stdlib.h>
+#include<vector>
+#include<queue>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<cctype>
+#include<cmath>
+#include<map>
+#include<functional>
+#include<stack>
+#include<sstream>
+#include<string>
+#include<cassert>
+#include<regex>
+#include<functional>
+using namespace std;
 
 struct UndirectedGraphNode {
 	int label;
@@ -44,6 +62,86 @@ int strStr(string haystack, string needle) {
 	return -1;
 }
 
+int strStr(string haystack, string needle) {
+	int m = haystack.length(), n = needle.length();
+	if (!n) return 0;
+	for (int i = 0; i < m - n + 1; i++) {
+		int j = 0;
+		for (; j < n; j++)
+			if (haystack[i + j] != needle[j])
+				break;
+		if (j == n) return i;
+	}
+	return -1;
+}
+
+
+class Solution {
+public:
+	int strStr(string haystack, string needle) {
+		int m = haystack.length(), n = needle.length();
+		if (!n) return 0;
+		vector<int> lps = kmpProcess(needle);
+		for (int i = 0, j = 0; i < m;) {
+			if (haystack[i] == needle[j]) {
+				i++;
+				j++;
+			}
+			if (j == n) return i - j;
+			if (i < m && haystack[i] != needle[j]) {
+				if (j) j = lps[j - 1];
+				else i++;
+			}
+		}
+		return -1;
+	}
+private:
+	vector<int> kmpProcess(string& needle) {
+		int n = needle.length();
+		vector<int> lps(n, 0);
+		for (int i = 1, len = 0; i < n;) {
+			if (needle[i] == needle[len])
+				lps[i++] = ++len;
+			else if (len) len = lps[len - 1];
+			else lps[i++] = 0;
+		}
+		return lps;
+	}
+};
+
+
+// follow up
+
+int strStr(vector<vector<char>>& haystack, string needle)
+{
+	int total = 0;
+	int m = haystack.size(), n = haystack[0].size();
+	for (int row = 0; row < m; ++row)
+	{
+		for (int col = 0; col < haystack[row].size(); ++col)
+		{
+			int k = 0;// the mathc length of needle
+			int posRow = row;
+			int posCol = col;
+			while ((posRow < m && posCol <haystack[row].size()) && k < needle.size() && haystack[posRow][posCol] == needle[k])
+			{
+				k++;
+				posCol++;
+				if (posCol == haystack[row].size())
+				{
+					posCol = 0;
+					posRow++;
+				}
+			}
+			if (k == needle.size())return total + col - 1;
+		}
+		total += haystack[row].size();
+	}
+	return -1;
+}
+
+
+
 //252 meeting rooms
 //@taobupt
 
@@ -61,6 +159,8 @@ bool canAttendMeetings(vector<Interval>& intervals) {
 	}
 	return true;
 }
+
+
 
 //13 lt roman to integer
 //@taobupt
@@ -229,6 +329,24 @@ vector<vector<int>> levelOrder(TreeNode* root) {
 	return res;
 }
 
+void dfs(vector<vector<int>>& res, int level, TreeNode* root)
+{
+	if (root == NULL)return;
+	if (res.size() == level)res.push_back({});
+	res[level].push_back(root->val);
+	dfs(res, level + 1, root->left);
+	dfs(res, level + 1, root->right);
+}
+vector<vector<int>> levelOrder(TreeNode* root)
+{
+	vector<vector<int>>res;
+	if (root == NULL)return res;
+	dfs(res, 0, root);
+	return res;
+}
+
+
+
 //lt 26 removeDuplicates from sorted array
 //@taobupt
 int removeDuplicates(vector<int>& nums) {
@@ -316,6 +434,12 @@ All root - to - leaf paths are :
 
 //dfs can solve this
 
+
+//
+//The time complexity for the problem should be O(n), since we are basically visiting each node in the tree.Yet an interviewer might ask you for further 
+//optimization when he or she saw a string concatenation.A string concatenation is just too costly.A StringBuilder can be used although a bit tricky since it is not immutable like string is.
+//When using StringBuilder, We can just keep track of the length of the StringBuilder before we append anything to it before recursion and afterwards set the length back.Another trick is when to append the "->", 
+//since we don't need the last arrow at the end of the string, we only append it before recurse to the next level of the tree. Hope the solution helps!
 void dfsBinaryTreePaths(TreeNode* root, vector<string>& res, string path)
 {
 	if (root->left == NULL && root->right == NULL)
@@ -335,6 +459,29 @@ vector<string> binaryTreePaths(TreeNode* root) {
 	return res;
 }
 
+
+// itreative
+
+vector<string>findPath(TreeNode* root)
+{
+	vector<string>result;
+	if (root == NULL)return result;
+	stack<pair<TreeNode*, string>>stk;
+	stk.push(make_pair(root, ""));
+	while (!stk.empty())
+	{
+		TreeNode* node = stk.top().first;
+		string path = stk.top().second + "->" + to_string(node->val);
+		stk.pop();
+		if (node->left == NULL && node->right == NULL)
+		{
+			result.push_back(path.substr(2));
+		}
+		if (node->left)stk.push(make_pair(node->left, path));
+		if (node->right)stk.push(make_pair(node->right, path));
+	}
+	return result;
+}
 
 //20 valid parentheses only solved by stack
 //@taobupt
@@ -366,7 +513,7 @@ bool isValid(string s) {
 	return stk.empty();
 }
 
-//88 merged sorted array;
+//88 merge sorted array;
 // @taobupt
 
 //Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.
@@ -508,7 +655,7 @@ string addBinaryBetter(string a, string b)
 	return s;
 }
 
-//125 valid parlindrome
+//125 valid palindrome
 //@taobupt
 
 /*
@@ -519,6 +666,17 @@ For example,
 "race a car" is not a palindrome.
 */
 
+
+bool isPalindrome(string s) {
+	int i = 0, j = s.size() - 1;
+	while (i<j)
+	{
+		while (i<j && !isalnum(s[i]))i++;
+		while (i<j && !isalnum(s[j]))j--;
+		if (tolower(s[i++]) != tolower(s[j--]))return false;
+	}
+	return true;
+}
 bool isPalindrome(string s) {
 	string res;
 	for (char c : s)if (isalnum(c))res.push_back(tolower(c));
@@ -529,6 +687,18 @@ bool isPalindrome(string s) {
 	}
 	return true;
 }
+bool isPalindrome(string s)
+{
+	int n = s.size();
+	for (int i = 0, j = n - 1; i < j; i++, j--)
+	{
+		while (!isalnum(s[i]) && i < j)i++;
+		while (!isalnum(s[j]) && i < j)j--;
+		if(tolower(s[i]) != tolower(s[j]))return false;
+	}
+	return true;
+}
+
 
 // lt 157 157. Read N Characters Given Read4
 /*
@@ -551,6 +721,70 @@ int read(char *buf, int n) {
 	return min(n, res + x);
 }
 
+class Solution{
+public:
+	Solution() :buffCnt(0), buffPtr(0){}
+	int read(char* buf, int n)
+	{
+		int cnt = 0;
+		while (cnt < n)
+		{
+			if (buffPtr == 0)buffCnt = read4(buff);
+			if(buffCnt == 0)break;
+			while (cnt < n && buffPtr < buffCnt)
+			{
+				buf[cnt++] = buff[buffPtr++];
+			}
+			if (buffPtr == buffCnt)buffPtr = 0;
+		}
+		return cnt;
+	}
+private:
+	char buff[5];
+	int buffCnt;
+	int buffPtr;
+};
+
+
+int read4k(char* buf);
+int read(char *buf, int n)
+{
+	char content[4096];
+	int count = 0;
+	bool hasNext = true;
+	while (hasNext && count < n)
+	{
+		int readLength = read4k(content);
+		if (readLength < 4096)hasNext = false;
+		for (int i = 0; i < readLength && count < n; ++i)
+		{
+			buf[count++] = content[i];
+		}
+	}
+	return count;
+}
+
+char content[4096];
+int haveRead = 0;
+int index = 0;
+int read(char* buf, int n)
+{
+	int count = 0;
+	bool hasNext = true;
+	while (hasNext && count < n)
+	{
+		if (index == 0)haveRead = read4k(content);
+		if (haveRead < 4096)hasNext = false;
+		while (count < n && index < haveRead)
+		{
+			buf[count] = content[index];
+			count++;
+			index++;
+		}
+		if (index == haveRead)index = 0;
+	}
+	return count;
+}
 
 
 //count and say
@@ -560,7 +794,7 @@ int read(char *buf, int n) {
 
 //@taobupt
 
-//Implement pow(x, n).
+//50 Implement pow(x, n).
 double myPow(double x, int n) {
 	bool negative = n < 0 ? true : false;
 	unsigned nn = n < 0 ? -n : n;
@@ -633,6 +867,40 @@ public:
 private:
 	stack<TreeNode*>stk;
 };
+
+// bsts iterator
+struct cmp{
+	bool operator()(BSTIterator  it1, BSTIterator it2)
+	{
+		return it1.next() > it2.next();
+	}
+};
+
+class BSTIterators{
+public:
+	BSTIterators(vector<BSTIterator>vv)
+	{
+		for (int i = 0; i < vv.size(); ++i)
+		{
+			if (vv[i].hasNext())pq.push(vv[i]);
+		}
+	}
+	bool hasnext()
+	{
+		return !pq.empty();
+	}
+	int next()
+	{
+		BSTIterator it = pq.top();
+		pq.pop();
+		int val = it.next();
+		if (it.hasNext())pq.push(it);
+		return val;
+	}
+private:
+	priority_queue<BSTIterator, vector<BSTIterator>, cmp>pq;
+};
+
 
 class BinaryPreorderIterator{
 public:
@@ -756,7 +1024,8 @@ Given encoded message "12", it could be decoded as "AB" (1 2) or "L" (12).
 
 The number of ways decoding "12" is 2.
 */
-
+// decodeways 91
+//decode way
 int numDecodings(string s) {
 	int n = s.size();
 	if (s.empty() || s[0] == '0')return 0;// attention here, otherwise wa;
@@ -780,7 +1049,7 @@ int numDecodingsSaveSpace(string s)
 	if (s.empty() || s[0] == '0')return 0;
 	int n = s.size();
 	int r1 = 1, r2 = 1;// r2:decode ways of s[i-2],r1:decodes ways of s[i-1];
-	for (int i = 2; i < n; ++i)
+	for (int i = 1; i < n; ++i)
 	{
 		if (s[i] == '0')r1 = 0;
 		if (s[i - 1] == '1' || s[i - 1] == '2' && s[i] <= '6')
@@ -794,6 +1063,21 @@ int numDecodingsSaveSpace(string s)
 		}
 	}
 	return r1;
+}
+
+int numDecodings(string s)
+{
+	int n = s.size();
+	if (n == 0)return 0;
+	vector<int>dp(n + 1, 0);
+	dp[n] = 1;
+	dp[n - 1] = s[n - 1] == '0' ? 0 : 1;
+	for (int i = n - 2; i >= 0; --i)
+	{
+		if (s[i] == '0')continue;
+		else dp[i] = stoi(s.substr(i, 2)) <= 26 ? dp[i + 1] + dp[i + 2] : dp[i + 1];
+	}
+	return dp[0];
 }
 
 //lt 75 sort colors
@@ -813,6 +1097,67 @@ void sortColors(vector<int>& nums) {
 		else cur++;
 	}
 }
+
+
+// sortKcolor
+
+void sortKcolor(vector<int>colors, int k)
+{
+	int left = 0;
+	int right = colors.size() - 1;
+	while (k)
+	{
+		int min1 = INT_MAX;
+		int max1 = INT_MIN;
+		for (int i = left; i <= right; ++i)
+		{
+			min1 = min(min1, colors[i]);
+			max1 = max(max1, colors[i]);
+		}
+		int index = left;
+		int minIndex = left;
+		int maxIndex = right;
+		while (minIndex < maxIndex && index <= maxIndex)
+		{
+			if (colors[index] == min1)
+			{
+				swap(colors[minIndex++], colors[index++]);
+			}
+			else if (colors[index] == max1)
+			{
+				swap(colors[index], colors[maxIndex--]);
+			}
+			else index++;
+		}
+		left = minIndex;
+		right = maxIndex;
+		k -= 2;
+	}
+	
+}
+
+/*
+public void countingSort(int[] colors) {
+int[] count = new int[3];
+for (int color : colors) {
+count[color]++;
+}
+int[] index = new int[3];
+int total = 0;
+for (int i = 0; i < 3; i++) {
+index[i] = total;
+total += count[i];
+}
+int[] temp = new int[colors.length];
+for (int i = 0; i < colors.length; i++) {
+temp[index[colors[i]]] = colors[i];
+index[colors[i]]++;
+}
+for (int i = 0; i < colors.length; i++) {
+colors[i] = temp[i];
+}
+}
+*/
 
 void countSort(vector<int>nums)
 {
@@ -838,6 +1183,20 @@ dict = ["leet", "code"].
 
 Return true because "leetcode" can be segmented as "leet code".
 */
+
+// recrusive way
+
+bool wordBreak(string s, unordered_set<string>& wordDict) {
+	if (s.empty())return true;
+	for (int i = 1; i <= s.size(); ++i)
+	{
+		string sub = s.substr(0, i);
+		if (wordDict.find(sub) != wordDict.end() && wordBreak(s.substr(i), wordDict))return true;
+	}
+	return false;
+}
+
+// iterative way
 bool wordBreak(string s, unordered_set<string>& wordDict) {
 	int n = s.size();
 	vector<bool>dp(n + 1, false);
@@ -884,6 +1243,129 @@ bool wordBreak(string s, unordered_set<string>& wordDict) {
 }
 
 
+//output one path
+//in this way , you can make dfs return true or false;
+
+
+bool dfs(vector<string>& path,unordered_set<string>& dict,string input,int pos)
+{
+	if(index==input.size())
+	{
+		return true;
+	}
+	for(int i=pos;i<input.size();++i)
+	{
+		string word=input.substr(pos,i-pos+1);
+		if(dict.find(word)!=dict.end())
+		{
+			path.push_back(word);
+			if(dfs(path,dict,input,i+1))return true;
+			path.pop_back();
+		}
+	}
+	return false;
+}
+string wordBreakOnePath(unordered_set<string>& dict,string input)
+{
+	vector<string>path;
+	dfs(path,dict,input,0);
+	string res;
+	for(string str:path)res+=str+" ";
+	if(!res.empty())res.pop_back();
+return res;
+}
+
+// all path  ,should use wordbreakI to acclerate this process
+bool wordBreak1(string s, unordered_set<string>& wordDict) {
+	//dp[i] stands s[0..i-1] in can be fomred by wordDict;
+	int n = s.size();
+	vector<int>dp(n+1,0);
+	dp[0] = 1;
+	for (int i = 1; i <= n; ++i)
+	{
+		for (int j = 0; j < i; ++j)
+		{
+			if (dp[j] && wordDict.find(s.substr(j,i-j)) != wordDict.end())
+			{
+				dp[i] = 1;
+				break;
+			}
+		}
+	}
+	return dp[n];
+
+}
+
+    void dfs140(vector<string>&res, string path, string s, unordered_set<string>& wordDict, int cur)
+{
+	if (cur == s.size())
+	{
+		res.push_back(path);
+		return;
+	}
+	else
+	{
+		for (int i = cur; i < s.size(); ++i)
+		{
+			string tmp = s.substr(cur, i + 1 - cur);
+			if (wordDict.find(tmp) != wordDict.end() && wordBreak1(s.substr(i+1), wordDict))
+			{
+				if (!path.empty())
+				{
+					dfs140(res, path + " " + tmp, s, wordDict, i + 1);
+				}
+				else
+				{
+					dfs140(res, tmp, s, wordDict, i + 1);
+				}
+			}
+		}
+	}
+}
+
+
+
+vector<string> wordBreak(string s, unordered_set<string>& wordDict) {
+	vector<string>res;
+	string path = "";
+	if (wordBreak1(s, wordDict))
+	{
+		dfs140(res, path, s, wordDict, 0);
+	}
+	return res;
+}
+
+
+// better solution; from back to forward
+class Solution {
+	unordered_map<string, vector<string>> m;
+	vector<string> combine(string word, vector<string> prev){
+		for (int i = 0; i<prev.size(); ++i){
+			prev[i] += " " + word;
+		}
+		return prev;
+	}
+
+public:
+	vector<string> wordBreak(string s, unordered_set<string>& dict) {
+		if (m.count(s)) return m[s]; //take from memory
+		vector<string> result;
+		if (dict.count(s)){ //a whole string is a word
+			result.push_back(s);
+		}
+		for (int i = 1; i<s.size(); ++i){
+			string word = s.substr(i);
+			if (dict.count(word)){
+				string rem = s.substr(0, i);
+				vector<string> prev = combine(word, wordBreak(rem, dict));
+				result.insert(result.end(), prev.begin(), prev.end());// insert all prev vector to result vector
+			}
+		}
+		m[s] = result; //memorize
+		return result;
+	}
+}
+
 //lt 15 3sum
 //@taobupt
 /*
@@ -923,6 +1405,41 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 	}
 	return res;
 }
+
+
+// hasmap
+vector<vector<int>>threeSum(vector<int>input, int target)
+{
+	vector<vector<int>>result;
+	unordered_set<vector<int>>visited;
+	unordered_map<int, int>valueToIndex;
+	for (int i = 0; i < input.size(); ++i)valueToIndex[input[i]] = i;
+	for (int i = 0; i < input.size()-1; ++i)
+	{
+		int newTarget = target - input[i];
+		for (int j = i + 1; j < input.size(); ++j)
+		{
+			if (valueToIndex.find(newTarget - input[j]) != valueToIndex.end())
+			{
+				int index = valueToIndex[newTarget - input[j]];
+				if (index != j && index != i)
+				{
+					vector<int>pa{ input[i], input[j], input[index] };
+					sort(pa.begin(), pa.end());
+					if (visited.find(pa) != visited.end())
+					{
+						result.push_back(pa);
+						visited.insert(pa);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+
+
 
 // 341 flatten nested list iterator
 //@taobupt
@@ -979,6 +1496,82 @@ private:
 	stack<NestedInteger>stk;
 };
 
+
+
+// you can write the recrusive way
+
+//vector<int>flat;
+//int size;
+//void flatten(NestedInteger& nest)
+//{
+//	if (nest.isInteger())flat.push_back(nest.getInteger());
+//	else
+//	{
+//		int k = 0;
+//		vector<NestedInteger> li = nest.getList();
+//		while (k<li.size())
+//		{
+//			flatten(li[k]);
+//			k++;
+//		}
+//	}
+//}
+//
+//NestedIterator(vector<NestedInteger> &nestedList) {
+//	size = 0;
+//	for (int i = 0; i<nestedList.size(); ++i)flatten(nestedList[i]);
+//}
+
+vector<int>flatten(vector<NestedInteger>nestedList)
+{
+		//     you can use a stack
+	vector<int>res;
+	if (nestedList.empty())return res;
+	stack<NestedInteger>stk;
+	for (int i = nestedList.size() - 1; i >= 0; --i)
+	{
+		stk.push(nestedList[i]);
+	}
+	while (!stk.empty())
+	{
+		NestedInteger curNest = stk.top();
+		stk.pop();
+		if (curNest.isInteger())
+		{
+			res.push_back(curNest.getInteger());
+		}
+		else
+		{
+			for (int i = curNest.getList().size() - 1; i >= 0; --i)
+			{
+				stk.push(curNest.getList()[i]);
+			}
+		}
+	}
+
+}
+
+//251 flatten 2d vector
+class Vector2D {
+	vector<vector<int>>::iterator i, iEnd;
+	int j = 0;
+public:
+	Vector2D(vector<vector<int>>& vec2d) {
+		i = vec2d.begin();
+		iEnd = vec2d.end();
+	}
+
+	int next() {
+		hasNext();
+		return (*i)[j++];
+	}
+
+	bool hasNext() {
+		while (i != iEnd && j == (*i).size())
+			i++, j = 0;
+		return i != iEnd;
+	}
+};
 
 //98 validate bst
 //@taobupt
@@ -1069,6 +1662,26 @@ string multiply(string num1, string num2) {
 	return ans;
 }
 
+string multiply(string num1, string num2)
+{
+	int m = num1.size(), n = num2.size();
+	//vector<int>pos = vector<int>(m + n, 0);
+	string sum(m + n, '0');
+	for (int i = m - 1; i >= 0; --i)
+	{
+		int carry = 0;
+		for (int j = n - 1; j >= 0; --j)
+		{
+			int tmp = (sum[i + j + 1] - '0') + (num1[i] - '0')*(num2[j] - '0') + carry;
+			sum[i + j + 1] = tmp % 10 + '0';
+			carry = tmp / 10;
+		}
+		sum[i] +=carry;
+	}
+	int startpos = sum.find_first_not_of("0");
+	return startpos != sum.npos ? sum.substr(startpos) : "0";
+}
+
 
 //lt 133 clone graph
 
@@ -1111,6 +1724,141 @@ UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
 	return mp[node];
 }
 
+//bfs
+
+UndirectedGraphNode* cloneGraph(UndirectedGraphNode* node)
+{
+	if (!node)return NULL;
+	UndirectedGraphNode* copy = new UndirectedGraphNode(node->label);
+	mp[node] = copy;
+	queue<UndirectedGraphNode*>q;
+	q.push(node);
+	while (!q.empty())
+	{
+		UndirectedGraphNode* cur = q.front();
+		q.pop();
+		for (UndirectedGraphNode* neigh : cur->neighbors)
+		{
+			if (mp.find(neigh) == mp.end())
+			{
+				UndirectedGraphNode* neig = new UndirectedGraphNode(neight->label);
+				mp[neigh] = neig;
+				q.push(neig);
+			}
+			mp[cur]->neighbors.push_back(mp[neigh]);
+		}
+	}
+	return copy;
+}
+
+
+//138 copy list with random pointer
+RandomListNode *copyRandomList(RandomListNode *head) {
+	if (head == NULL)return head;
+	unordered_map<RandomListNode*, RandomListNode*>mp;
+	RandomListNode* save_head = head;
+	while (head)
+	{
+		mp[head] = new RandomListNode(head->label);
+		head = head->next;
+	}
+	head = save_head;
+	RandomListNode* newHead = NULL;
+	RandomListNode* newTail = NULL;
+	while (head)
+	{
+		RandomListNode* Node = mp[head];
+		Node->next = mp[head->next];
+		Node->random = mp[head->random];
+		if (newHead == NULL)
+		{
+			newHead = newTail = Node;
+		}
+		else
+		{
+			newTail->next = Node;
+			newTail = newTail->next;
+		}
+		head = head->next;
+	}
+	return newHead;
+}
+
+
+unordered_map<RandomListNode*, RandomListNode*>mp;
+class Solution {
+public:
+	RandomListNode *copyRandomList(RandomListNode *head) {
+		if (head == NULL)return head;
+		if (mp.find(head) == mp.end())
+		{
+			mp[head] = new RandomListNode(head->label);
+			mp[head]->next = copyRandomList(head->next);
+			mp[head]->random = copyRandomList(head->random);
+		}
+		return mp[head];
+	}
+};
+
+
+An intuitive solution is to keep a hash table for each node in the list, via which we just need to iterate the list in 2 rounds respectively to create nodes and assign the values for their random pointers.As a result, the space complexity of this solution is O(N), although with a linear time complexity.
+
+As an optimised solution, we could reduce the space complexity into constant.The idea is to associate the original node with its copy node in a single linked list.In this way, we don't need extra space to keep track of the new nodes.
+
+The algorithm is composed of the follow three steps which are also 3 iteration rounds.
+
+Iterate the original list and duplicate each node.The duplicate
+of each node follows its original immediately.
+Iterate the new list and assign the random pointer for each
+duplicated node.
+Restore the original list and extract the duplicated nodes.
+The algorithm is implemented as follows :
+// no extra space
+public RandomListNode copyRandomList(RandomListNode head) {
+	RandomListNode iter = head, next;
+
+	// First round: make copy of each node,
+	// and link them together side-by-side in a single list.
+	while (iter != null) {
+		next = iter.next;
+
+		RandomListNode copy = new RandomListNode(iter.label);
+		iter.next = copy;
+		copy.next = next;
+
+		iter = next;
+	}
+
+	// Second round: assign random pointers for the copy nodes.
+	iter = head;
+	while (iter != null) {
+		if (iter.random != null) {
+			iter.next.random = iter.random.next;
+		}
+		iter = iter.next.next;
+	}
+
+	// Third round: restore the original list, and extract the copy list.
+	iter = head;
+	RandomListNode pseudoHead = new RandomListNode(0);
+	RandomListNode copy, copyIter = pseudoHead;
+
+	while (iter != null) {
+		next = iter.next.next;
+
+		// extract the copy
+		copy = iter.next;
+		copyIter.next = copy;
+		copyIter = copy;
+
+		// restore the original list
+		iter.next = next;
+
+		iter = next;
+	}
+
+	return pseudoHead.next;
+}
 
 // 78 subsets
 /*
@@ -1455,6 +2203,35 @@ vector<vector<string>> groupAnagrams(vector<string>& strs)
 	return anagrams;
 }
 
+//using counting sort
+class Solution {
+public:
+	vector<vector<string>> groupAnagrams(vector<string>& strs) {
+		unordered_map<string, multiset<string>> mp;
+		for (string s : strs) {
+			string t = strSort(s);
+			mp[t].insert(s);
+		}
+		vector<vector<string>> anagrams;
+		for (auto m : mp) {
+			vector<string> anagram(m.second.begin(), m.second.end());
+			anagrams.push_back(anagram);
+		}
+		return anagrams;
+	}
+private:
+	string strSort(string& s) {
+		int count[26] = { 0 }, n = s.length();
+		for (int i = 0; i < n; i++)
+			count[s[i] - 'a']++;
+		int p = 0;
+		string t(n, 'a');
+		for (int j = 0; j < 26; j++)
+			for (int i = 0; i < count[j]; i++)
+				t[p++] += j;
+		return t;
+	}
+};
 
 //238 product of array except self
 //@taobupt
@@ -1853,7 +2630,7 @@ void connect(TreeLinkNode *root) {
 		}
 	}
 }
-
+// perfect tree
 void connect116(TreeLinkNode *root) {
 	if (root == NULL)return;
 	TreeLinkNode* pre = root;
@@ -1871,6 +2648,38 @@ void connect116(TreeLinkNode *root) {
 	}
 }
 
+
+// more readable
+
+
+void connect117(TreeLinkNode* root)
+{
+	TreeLinkNode* head = root;// the left most node in the lower level
+	TreeLinkNode* prev = nullptr;// the prevous node in the lower level
+	TreeLinkNode* curr = nullptr;// the current node in the upper level
+	while (head)
+	{
+		curr = head;
+		prev = nullptr;
+		head = nullptr;
+		while (curr)
+		{
+			if (curr->left)
+			{
+				if (prev)prev->next = curr->left;
+				else head = curr->left;
+				prev = curr->left;
+			}
+			if (curr->right)
+			{
+				if (prev)prev->next = curr->right;
+				else head = curr->right;
+				prev = curr->right;
+			}
+			curr = curr->next;
+		}
+	}
+}
 void connect117(TreeLinkNode* root)
 {
 	TreeLinkNode* nextHead = new TreeLinkNode(0);
@@ -2139,6 +2948,77 @@ private:
 	}
 };
 
+
+// use linkedlist to store data
+struct Node{
+	string val;
+	Node* next;
+	Node(string val) :val(val), next(nullptr){}
+};
+class Codec {
+public:
+
+	Node* serialize(TreeNode* root) {
+		Node* first = new Node(" ");
+		Node* p = first;
+		if (root == NULL)return nullptr;
+		queue<TreeNode*>q;
+		q.push(root);
+		TreeNode* node = NULL;
+		while (!q.empty())
+		{
+			node = q.front();
+			q.pop();
+			if (node)
+			{
+				p->next = new Node(to_string(node->val));
+				q.push(node->left);
+				q.push(node->right);
+			}
+			else p->next = new Node("#");
+			p = p->next;
+		}
+		return first->next;
+	}
+
+	// Decodes your encoded data to tree.
+	TreeNode* deserialize(Node* head) {
+		if (head == nullptr || head->val == "#")return NULL;
+		TreeNode* root = new TreeNode(stoi(head->val));
+		TreeNode* cur = root;
+		queue<TreeNode*>q;
+		int i = 1;
+		head = head->next;
+		while (head)
+		{
+
+			if (head->val == "#")
+			{
+				if (!q.empty() && (i % 2 == 0))
+				{
+					cur = q.front();
+					q.pop();
+				}
+				head = head->next;
+				i++;
+				continue;
+			}
+			TreeNode* newNode = new TreeNode(stoi(head->val));
+			q.push(newNode);
+			if (i % 2 == 1)cur->left = newNode;
+			else
+			{
+				cur->right = newNode;
+				cur = q.front();
+				q.pop();
+			}
+			head = head->next;
+			i++;
+		}
+		return root;
+	}
+
+};
 //380 insert delete getRandom O(1)
 /*
 Design a data structure that supports all following operations in average O(1) time.
@@ -2384,9 +3264,71 @@ vector<string>addOperator(string num, int target)
 	}
 }
 
+void backtracking(vector<string>&res, string path, string num, int target, int pos, long eval, long multi)
+{
+	if (pos == num.size() && target == eval)
+	{
+		res.push_back(path);
+		return;
+	}
+	for (int i = pos + 1; i <= num.size(); ++i)
+	{
+		if (i != pos + 1 && num[pos] == '0')continue;
+		string curstr = num.substr(pos, i - pos);
+		long cur = stol(curstr);
+		if (pos == 0)backtracking(res, path + curstr, num, target, i, cur, cur);
+		else
+		{
+			backtracking(res, path + "+" + curstr, num, target, i, eval + cur, cur);
+			backtracking(res, path + "-" + curstr, num, target, i, eval - cur, -cur);
+			backtracking(res, path + "*" + curstr, num, target, i, eval - multi + multi*cur, multi*cur);
+		}
+	}
+}
+
+vector<string> addOperators(string num, int target)
+{
+	vector<string>res;
+	if (num.empty())return res;
+	string path;
+	backtracking(res, path, num, target, 0, 0, 0);
+	return res;
+}
 
 
-// 79 word seach
+//only add and sub
+
+
+void backtracking1(vector<string>&res, string path, string num, int target, int pos, long eval, long cur)
+{
+	if (pos == num.size() && target == eval)
+	{
+		if (!path.empty() && path[0] == '+')path = path.substr(1);
+		res.push_back(path);
+		return;
+	}
+	for (int i = pos + 1; i <= num.size(); ++i)
+	{
+		if (i != pos + 1 && num[pos] == '0')continue;
+		string curstr = num.substr(pos, i - pos);
+		long cur = stol(curstr);
+		backtracking1(res, path + "+" + curstr, num, target, i, eval + cur, cur);
+		backtracking1(res, path + "-" + curstr, num, target, i, eval - cur, -cur);
+
+	}
+}
+
+vector<string> addOperators1(string num, int target)
+{
+	vector<string>res;
+	if (num.empty())return res;
+	string path;
+	backtracking1(res, path, num, target, 0, 0, 0);
+	return res;
+}
+
+
+// 79 word search
 /*
 Given a 2D board and a word, find if the word exists in the grid.
 
@@ -2432,6 +3374,29 @@ bool exist(vector<vector<char>>& board, string word) {
 				if (dfs79(board, word, 1, dx, dy, i, j, vis))return true;
 				vis[i][j] = false;
 			}
+		}
+	}
+	return false;
+}
+
+bool exist(vector<vector<char>>& board, int i, int j, string word, int pos)
+{
+	if (pos == word.size())return true;
+	if (i < 0 || j < 0 || i >= board.size() || j >= board[0].size())return false;
+	if (board[i][j] != word[pos])return false;
+	board[i][j] = '*';
+	bool exist1 = exist(board, i, j + 1, word, pos + 1) || exist(board, i + 1, j, word, pos + 1) || exist(board, i, j - 1, word, pos + 1) || exist(board, i - 1, j, word, pos + 1);
+	board[i][j] = word[pos];
+	return exist1;
+}
+bool exist(vector<vector<char>>& board, string word) {
+	if (board.empty() || board[0].empty())return false;
+	int m = board.size(), n = board[0].size();
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if (exist(board, i, j, word, 0))return true;
 		}
 	}
 	return false;
@@ -2523,6 +3488,69 @@ private:
 	TrieNode* root;
 };
 
+
+class TrieNode {
+public:
+	// Initialize your data structure here.
+	bool isEnd;
+	TrieNode* subNode[26];
+	TrieNode() {
+		isEnd = false;
+		memset(subNode, NULL, 26 * sizeof(TrieNode*));
+	}
+};
+
+class Trie {
+public:
+	Trie() {
+		root = new TrieNode();
+	}
+
+	// Inserts a word into the trie.
+	void insert(string word) {
+		TrieNode* cur = root;
+		for (char c : word)
+		{
+			TrieNode* &newNode = cur->subNode[c - 'a'];
+			if (newNode == nullptr)
+			{
+				newNode = new TrieNode();
+			}
+			cur = newNode;
+		}
+		cur->isEnd = true;
+	}
+
+	// Returns if the word is in the trie.
+	bool search(string word) {
+		TrieNode* cur = root;
+		for (char c : word)
+		{
+			TrieNode* newNode = cur->subNode[c - 'a'];
+			if (newNode == nullptr)return false;
+			cur = newNode;
+		}
+		return cur->isEnd;
+	}
+
+	// Returns if there is any word in the trie
+	// that starts with the given prefix.
+	bool startsWith(string prefix) {
+		TrieNode* cur = root;
+		for (char c : prefix)
+		{
+			TrieNode* newNode = cur->subNode[c - 'a'];
+			if (newNode == nullptr)return false;
+			cur = newNode;
+		}
+		return true;
+	}
+
+private:
+	TrieNode* root;
+};
+
+
 //212 word search II
 /*
 Given a 2D board and a list of words from the dictionary, find all words in the board.
@@ -2587,6 +3615,62 @@ vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
 	for (string x : result_set)res.push_back(x);
 	return res;
 }
+
+class TrieNode{
+public:
+	TrieNode* nodes[26];
+	string word;
+};
+
+TrieNode* buildTrie(vector<string>words)
+{
+	TrieNode* root = new TrieNode();
+	for (string str : words)
+	{
+		TrieNode*p = root;
+		for (char c : str)
+		{
+			int i = c - 'a';
+			if (p->nodes[i] == nullptr)p->nodes[i] = new TrieNode();
+			p = p->nodes[i];
+		}
+		p->word = str;
+	}
+	return root;
+}
+
+
+void dfs(vector<vector<char>>& board, int i, int j, TrieNode* p, vector<string>& res)
+{
+	char c = board[i][j];
+	if (c == '#' || p->nodes[c - 'a'] == nullptr)return;
+	p = p->nodes[c - 'a'];
+	if (!p->word.empty())
+	{
+		res.push_back(p->word);
+		p->word.clear();
+	}
+	board[i][j] = '#';
+	if (i > 0)dfs(board, i - 1, j, p, res);
+	if (j > 0)dfs(board, i, j - 1, p, res);
+	if (i < board.size() - 1)dfs(board, i + 1, j, p, res);
+	if (j < board[0].size() - 1)dfs(board, i, j + 1, p, res);
+	board[i][j] = c;
+}
+vector<string>findWords(vector<vector<char>>board, vector<string>& words)
+{
+	vector<string>res;
+	TrieNode* root = buildTrie(words);
+	for (int i = 0; i < board.size(); ++i)
+	{
+		for (int j = 0; j < board[0].size(); ++j)
+		{
+			dfs(board, i, j, root, res);
+		}
+	}
+	return res;
+}
+
 
 // 398  random pick index
 /*
@@ -2828,7 +3912,12 @@ int maximalSquare(vector<vector<char>>& matrix) {
 }
 
 //O(n) space
-//
+//As can be seen, each time when we update size[i][j], 
+//we only need size[i][j - 1], size[i - 1][j - 1] (at the previous left column) 
+//and size[i - 1][j] (at the current column). 
+//So we do not need to maintain the full m*n matrix. 
+//In fact, keeping two columns is enough. 
+//Now we have the following optimized solution.
 int maximalSquare(vector<vector<char>>& matrix) {
 	if (matrix.empty() || matrix[0].empty())return 0;
 	int m = matrix.size(), n = matrix[0].size();
@@ -2837,7 +3926,7 @@ int maximalSquare(vector<vector<char>>& matrix) {
 	int edge = 0;
 	for (int i = 0; i < m; ++i)
 	{
-		pre[i] = matrix[i][0] - '0';
+		pre[i] = matrix[i][0] - '0';// left column, pre[i-1]:left corner column
 		edge = max(edge, pre[i]);
 	}
 	for (int j = 1; j < n; ++j)
@@ -2894,6 +3983,89 @@ vector<string> letterCombinations(string digits) {
 	return res;
 }
 
+
+
+
+/// better solution
+string mp[8] = { "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+class Solution {
+public:
+	void backtracking(vector<string>& res, string digits, string path, int pos)
+	{
+		if (path.size() == digits.size() && pos == digits.size())
+		{
+			res.push_back(path);
+			return;
+		}
+		for (int i = 0; i<mp[digits[pos] - '2'].size(); ++i)
+		{
+			backtracking(res, digits, path + mp[digits[pos] - '2'][i], pos + 1);
+		}
+	}
+	vector<string> letterCombinations(string digits) {
+		vector<string>res;
+		string path;
+		if (digits.empty())return res;
+		backtracking(res, digits, path, 0);
+		return res;
+	}
+};
+
+
+
+/*
+40. 某白人，一半谈career/resume，一半问算法。题目：破解密码，提供了一个函数，isPassword(String str)，如果pass in的是正确的密码，return true。又给定了每个字母可以变形的集合（例如，字母a可以变形为a或者A或者B或者*, 字母b可以变形为B或者F或者&...，需要自己设计一个data structure来存这个mapping），设计并实现一个函数，在给定一个字符串的情况下，对字符串进行变形，最后找到正确的密码。
+public List<String> letterCombinations(String digits) {
+List<String> result = new ArrayList<>();
+if (digits.length() == 0) {
+return result;
+}
+char[][] chs = {{},{},{'a','b','c'}, {'d','e','f'}, {'g', 'h', 'i'}, {'j', 'k', 'l'}, {'m', 'n', 'o'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v'}, {'w', 'x', 'y', 'z'}};
+StringBuilder path = new StringBuilder();
+helper(result, path, 0, digits, chs);
+return result;
+}
+
+private void helper(List<String> result, StringBuilder path, int pos, String digits, char[][] phoneNumber) {
+if (pos == digits.length()) {
+result.add(new StringBuilder(path).toString());
+return;
+}
+int digit = Integer.parseInt(digits.substring(pos, pos + 1));
+for (int i = 0; i < phoneNumber[digit].length; i++) {
+path.append(phoneNumber[digit][i]);
+helper(result, path, pos + 1, digits, phoneNumber);
+path.delete(path.length() - 1, path.length());
+}
+}
+
+*/
+
+//iterative way
+
+vector<string> letterCombinations(string digits) {
+	vector<string>res;
+	if (digits.empty())return res;
+	int n = digits.size();
+	queue<string>q;
+	q.push("");
+	for (int i = 0; i<n; ++i)
+	{
+		while (q.front().size() == i)
+		{
+			string cur = q.front();
+			q.pop();
+			for (char c : mp[digits[i] - '2'])q.push(cur + c);
+		}
+	}
+	while (!q.empty())
+	{
+		res.push_back(q.front());
+		q.pop();
+	}
+	return res;
+}
+
 //215 Kth largest element in an array
 /*
 Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
@@ -2906,6 +4078,8 @@ You may assume k is always valid, 1 ≤ k ≤ array's length.
 */
 
 //@taobupt
+
+//quick select     O(N^2)when always pick the most right one 
 int findKthLargest(vector<int>& nums, int k) {
 	priority_queue<int, vector<int>, greater<int>>pq;
 	int i = 0, n = nums.size();
@@ -3000,7 +4174,7 @@ the subarray [4,3] has the minimal length under the problem constraint.
 
 //@taobupt
 
-
+// two pointer
 //O(n) time complexity
 int minSubArrayLen(int s, vector<int>& nums) {
 	int begin = 0, end = 0, n = nums.size(), res = 0, minLength = INT_MAX;
@@ -3019,14 +4193,49 @@ int minSubArrayLen(int s, vector<int>& nums) {
 	return minLength == INT_MAX ? 0 : minLength;
 }
 
-
 //O(nlogn) you can add all number to the sum vector, and then you can use the binary search
+int upper_bound(vector<int>& nums, int left, int right, int target)
+{
+	int l = left;
+	int r = right;
+	while (l<r)
+	{
+		int m = l + (r - l) / 2;
+		if (nums[m] <= target)l = m + 1;
+		else r = m;
+	}
+	return nums[r]>target ? r : -1;
+
+
+
+}
+
+int minSubarrayLen(vector<int>&nums, int s)
+{
+	int n = nums.size(), minlen = INT_MAX;
+	vector<int>sums(n + 1, 0);
+	for (int i = 1; i <= n; ++i)
+	{
+		sums[i] = sums[i - 1] + nums[i - 1];
+	}
+	for (int i = 1; i <= n; ++i)
+	{
+		if (sums[i] >= s)
+		{
+			int p = upper_bound(sums, 0, i, sums[i] - s);
+			if (p != -1)minlen = min(minlen, i - p + 1);
+		}
+	}
+	return minlen == INT_MAX ? 0 : minlen;
+
+}
+
+
+
 
 
 //325 maximum size subarray sum equal k
-/*
 
-*/
 //@taobupt
 
 int maxSubArrayLen(vector<int>& nums, int k) {
@@ -3059,7 +4268,7 @@ int maxSubArrayLen(vector<int>& nums, int k)
 		cur_sum += nums[i];
 		if (cur_sum == k)
 		{
-			max_len = i + 1;
+			max_len = max(i + 1,max_len);
 		}
 		else if (sums.find(cur_sum - k) != sums.end())
 		{
@@ -3208,6 +4417,102 @@ int minMeetingRooms(vector<Interval>& intervals) {
 	}
 	return pq.size();
 }
+
+
+
+// startTime stopTime
+// interval
+
+
+//if (p1.time == p2.time) {
+//	return p1.isStart ? 1 : 0;
+//}
+//return p1.time - p2.time;
+//p1.time<p2.time
+struct Point {
+	int time;
+	bool isStart;
+	Point(int time, bool isStart) :time(time), isStart(isStart){}
+};
+
+struct Interval{
+	int start;
+	int end;
+	Interval(int s, int e) :start(s), end(e){}
+};
+vector<int> findMaxOverLapTime(vector<Interval> intervals) {
+	vector<int> result;
+	if (intervals.empty()) {
+		return result;
+	}
+	vector<Point> points;
+	for (Interval interval : intervals) {
+		points.push_back(Point(interval.start, true));
+		points.push_back(Point(interval.end, false));
+	}
+	sort(points.begin(), points.end(), [](Point a, Point b){return a.time != b.time ? a.time < b.time : a.isStart; });
+	int max = 0;
+	int number = 0;
+	int start = 0;
+	int end = 0;
+	for (Point point : points) {
+		if (point.isStart) {
+			number++;
+			if (number > max) {
+				max = number;
+				start = point.time;
+				end = point.time;
+			}
+		}
+		else {
+			if (number == max) {
+				end = point.time;
+			}
+			number--;
+		}
+	}
+	for (int i = start; i < end; i++) {
+		result.push_back(i);
+	}
+	return result;
+}
+
+
+
+int findMaxOverLapTime1(vector<Interval> intervals) {
+	int res = INT_MAX;
+	if (intervals.empty()) {
+		return res;
+	}
+	vector<Point> points;
+	for (Interval interval : intervals) {
+		points.push_back(Point(interval.start, true));
+		points.push_back(Point(interval.end, false));
+	}
+	sort(points.begin(), points.end(), [](Point a, Point b){return a.time != b.time ? a.time < b.time : a.isStart; });
+	int max = 0;
+	int number = 0;
+	int start = 0;
+	//int end = 0;
+	for (Point point : points) {
+		if (point.isStart) {
+			number++;
+			if (number > max) {
+				max = number;
+				start = point.time;
+				//end = point.time;
+			}
+		}
+		else number--;
+	}
+	return start;
+}
+
+struct Point{
+int time;
+bool isStart;
+Point(int time,bool isStart):time(time),isStart(isStart){}
+};
 
 //261 graph valid tree
 /*
@@ -3361,6 +4666,34 @@ vector<vector<int>> verticalOrder(TreeNode* root) {
 }
 
 
+
+void getRange(TreeNode* root, int width[], int depth)
+{
+	if (root == NULL)return;
+	width[0] = min(depth, width[0]);
+	width[1] = max(depth, width[1]);
+	getRange(root->left, width, depth - 1);
+	getRange(root->right, width, depth + 1);
+}
+vector<vector<int>> verticalOrder(TreeNode* root) {
+	int width[2] = { 0, 0 };
+	getRange(root, width, 0);
+	vector<vector<int>>res;
+	if (root == NULL)return res;
+	res.resize(width[1] - width[0] + 1);
+	queue<pair<TreeNode*, int>>q;
+	q.push(make_pair(root, -width[0]));
+	while (!q.empty())
+	{
+		TreeNode* node = q.front().first;
+		int index = q.front().second;
+		q.pop();
+		res[index].push_back(node->val);
+		if (node->left)q.push(make_pair(node->left, index - 1));
+		if (node->right)q.push(make_pair(node->right, index + 1));
+	}
+	return res;
+}
 // 286 walls and gates
 /*
 You are given a m x n 2D grid initialized with these three possible values.
@@ -3550,6 +4883,54 @@ private:
 	}
 };
 
+class keyValueStore {
+public:
+	KeyValueStore(int capacity) {
+	}
+
+	int get(int key) {
+		if (mp.find(key) == mp.end())return -1;
+		setRecentlyUsed(key);
+		return mp[key].first;
+	}
+
+	void add(int key, int value) {
+		if (mp.find(key) == mp.end())
+		{ 
+			l.push_front(key);
+		}
+		else setRecentlyUsed(key);
+		mp[key] = make_pair(value, l.begin());
+	}
+
+	bool remove(int key)
+	{
+		if (mp.find(key) == mp.end())return false;
+		else
+		{
+			l.pop_front();
+			mp.erase(key);
+			return true;
+		}
+	}
+
+	int getLastKey()
+	{
+		return l.front();
+	}
+private:
+	list<int>l;
+	unordered_map<int, pair<int, list<int>::iterator>>mp;
+	int _capacity;
+	void setRecentlyUsed(int key)// the begin part of the list is high priority
+	{
+		l.erase(mp[key].second);
+		l.push_front(key);
+		mp[key].second = l.begin();
+	}
+};
+
+
 
 //lt 128 longest consecutive sequence
 /*
@@ -3570,9 +4951,10 @@ int longestConsecutive(vector<int>& nums)
 	int n = nums.size(), maxLength = 1, start = 0;
 	sort(nums.begin(), nums.end());
 	int k = 1, j = 1;
-	while (j < n)
+	while (k < n)//remove duplicate;
 	{
-		if (nums[j] != nums[j - 1])nums[k++] = nums[j];
+		if (nums[k] != nums[k - 1])nums[j++] = nums[k];
+		k++;
 	}
 	for (int i = 1; i < j; ++i)
 	{
@@ -3619,58 +5001,8 @@ Note: The input string may contain letters other than the parentheses ( and ).
 //@taobupt
 
 
-// it was my mistake. BFS is always slow
-bool valid(string s)
-{
-	int count = 0;
-	for (char c : s)
-	{
-		if (c == '(')count++;
-		else if (c == ')')
-		{
-			if (count <= 0)return false;
-			count--;
-		}
-	}
-	return count == 0;
-}
-vector<string> removeInvalidParentheses(string s) {
-	vector<string>res;
-	if (valid(s))return{ s };
-	queue<string>q;
-	q.push(s);
-	string str;
-	int flag = true;
-	unordered_map<string, bool>mp;
-	mp[s] = true;//  it was my mistake, I forget to use this, as a result, many substrs are pushed into queue, so we should check whether it has been visited 
-	while (flag && !q.empty())
-	{
-		int size = q.size();
-		while (size--)
-		{
-			str = q.front();
-			q.pop();
-			int n = str.size();
-			for (int i = 0; i<n; ++i)
-			{
-				if (str[i] != '(' && str[i] != ')')continue;
-				string substr = str.substr(0, i) + str.substr(i + 1);
-				if (valid(substr) && !mp[substr])
-				{
-					flag = false;
-					mp[substr] = true;
-					res.push_back(substr);
-				}
-				if (!mp[substr])
-				{
-					q.push(substr);
-					mp[substr] = true;
-				}
-			}
-		}
-	}
-	return res;
-}
+
+
 
 
 //256 paint house
@@ -3758,7 +5090,7 @@ int minCostII(vector<vector<int>>& costs)
 		}
 		for (int j = 0; j < n; ++j)
 		{
-			costs[i][j] == costs[i - 1][j] == firstMin ? secondMin : firstMin;
+			costs[i][j] += costs[i - 1][j] == firstMin ? secondMin : firstMin;// a little tricky
 		}
 	}
 	for (int x : costs[m - 1])res = min(res, x);
@@ -3901,6 +5233,27 @@ bool isMatch(string s, string p)
 	}
 	return f[m][n];
 }
+
+//53 maximum subarray sum
+int maxSubArray(vector<int>& nums) {
+	int sum1 = 0, res = INT_MIN;;
+	for (int x : nums)
+	{
+		if (sum1 >= 0)sum1 += x;
+		else sum1 = x;
+		res = max(res, sum1);
+	}
+	return res;
+}
+
+//follow up 
+//Maximum sum rectangle in a 2D matrix
+//leetcode 363 363. Max Sum of Rectangle No Larger Than K
+// actually you can solve maximum sum rectangle in 2d arrays, dynamic programming
+//The naive solution is brute-force, which is O((mn)^2)
+
+
+
 
 //lt 410 split array largest sum
 /*
@@ -4051,5 +5404,3195 @@ vector<string> fullJustify(vector<string>& words, int maxWidth) {
 		}
 		res.push_back(str);
 	}
+	return res;
+}
+
+//leetcode 206 reverseLinkedList
+ListNode* reverseList(ListNode* head) {
+	if (head == NULL || head->next == NULL)return head;
+	ListNode* prev = NULL;
+	ListNode* cur = head;
+	ListNode* after = head->next;
+	while (after)
+	{
+		cur->next = prev;
+		prev = cur;
+		cur = after;
+		after = after->next;
+	}
+	cur->next = prev;
+	return cur;
+}
+
+ListNode* reverseList(ListNode* head) {
+	ListNode* newHead = NULL;
+	while (head)
+	{
+		ListNode* next = head->next;
+		head->next = newHead;
+		newHead = head;
+		head = next;
+	}
+	return newHead;
+}
+
+ListNode* reverseList(ListNode* head) {
+	if(head==NULL||head->next==NULL)return head;
+	ListNode* node=reverseList(head->next);
+	head->next->next=head;
+	head->next=NULL;
+	return node;
+}
+
+
+//211 add and search word-data structure design
+// word search
+class TrieNode{
+public:
+	bool isEnd;
+	TrieNode* subNode[26];
+	TrieNode()
+	{
+		isEnd = false;
+		memset(subNode, NULL, 26 * sizeof(TrieNode*));
+	}
+};
+
+class WordDictionary {
+public:
+
+	WordDictionary()
+	{
+		root = new TrieNode();
+	}
+
+	// Adds a word into the data structure.
+	void addWord(string word) {
+		TrieNode* cur = root;
+		for (char c : word)
+		{
+			TrieNode* &newNode = cur->subNode[c - 'a'];
+			if (newNode == nullptr)
+			{
+				newNode = new TrieNode();
+			}
+			cur = newNode;
+		}
+		cur->isEnd = true;
+	}
+
+	// Returns if the word is in the data structure. A word could
+	// contain the dot character '.' to represent any one letter.
+	bool search(string word) {
+		return find(word, 0, root);
+	}
+
+private:
+	bool find(string word, int pos, TrieNode* node)
+	{
+		if (pos == word.size())return node->isEnd;
+		if (word[pos] == '.')
+		{
+			for (auto ptr : node->subNode)
+			{
+				if (ptr &&find(word, pos + 1, ptr))return true;
+			}
+			return false;
+		}
+		else return node->subNode[word[pos] - 'a'] ? find(word, pos + 1, node->subNode[word[pos] - 'a']) : false;
+	}
+	TrieNode* root;
+};
+
+//28 count and say
+string countAndSay(int n)
+{
+	if (n == 0)return "";
+	string res = "1";
+	while (--n)
+	{
+		string cur = "";
+		for (int i = 0; i < res.size(); ++i)
+		{
+			int count = 1;
+			while (i + 1 < res.size() && (res[i] == res[i + 1]))
+			{
+				count++;
+				i++;
+			}
+			cur += to_string(count) + res[i];
+		}
+		res = cur;
+	}
+	return res;
+}
+
+//127 word ladder
+int ladderLength(string beginWord, string endWord, unordered_set<string>& wordList) {
+	if (beginWord == endWord)return 1;
+	int ans = 2;
+	int n = beginWord.size();
+	queue<string>q;
+	q.push(beginWord);
+	if (wordList.find(beginWord) != wordList.end())wordList.erase(beginWord);
+	string cur;
+	while (!q.empty())
+	{
+		int size = q.size();
+		while (size--)
+		{
+			cur = q.front();
+			q.pop();
+			for (int i = 0; i<n; ++i)
+			{
+				char letter = cur[i];
+				for (char c = 'a'; c <= 'z'; ++c)
+				{
+					cur[i] = c;
+					if (cur == endWord)return ans;
+					if (wordList.find(cur) != wordList.end())
+					{
+						wordList.erase(cur);
+						q.push(cur);
+					}
+				}
+				cur[i] = letter;
+			}
+		}
+		ans++;
+	}
+	return 0;
+}
+
+//lt 234
+
+ListNode* reverseList(ListNode* head)
+{
+	if (head == NULL || head->next == NULL)return head;
+	ListNode* prev = NULL;
+	ListNode* cur = head;
+	ListNode* after = head->next;
+	while (after)
+	{
+		cur->next = prev;
+		prev = cur;
+		cur = after;
+		after = cur->next;
+	}
+	cur->next = prev;
+	return cur;
+}
+bool isPalindrome(ListNode* head) {
+	if (head == NULL || head->next == NULL)return true;
+	ListNode* part1 = head;
+	ListNode* part2 = head->next;
+	while (part2 && part2->next)
+	{
+		part1 = part1->next;
+		part2 = part2->next->next;
+	}
+	part2 = part1->next;
+	part1->next = NULL;
+	part1 = head;
+	part2 = reverseList(part2);
+	while (part2)
+	{
+		if (part1->val != part2->val)return false;
+		part1 = part1->next;
+		part2 = part2->next;
+	}
+	return true;
+}
+
+//25 reverse Node in K-group
+
+ListNode* reverseList(ListNode* head)
+{
+	if (head == NULL || head->next == NULL)return head;
+	ListNode* prev = NULL;
+	ListNode* cur = head;
+	ListNode* after = head->next;
+	while (after)
+	{
+		cur->next = prev;
+		prev = cur;
+		cur = after;
+		after = cur->next;
+	}
+	cur->next = prev;
+	return cur;
+}
+
+
+ListNode* reverseKGroup(ListNode* head, int k) {
+	if (head == NULL || head->next == NULL || k <= 1)return head;
+	ListNode* p = head;
+	int n = k - 1;
+	while (n>0)
+	{
+		p = p->next;
+		if (p == NULL)break;
+		n--;
+	}
+	if (n>0)return head;
+	ListNode* q = p->next;
+	p->next = NULL;
+	head = reverseList(head);
+	p = head;
+	while (p->next)p = p->next;
+	p->next = reverseKGroup(q, k);
+	return head;
+}
+
+
+//better
+ListNode* reverseKGroup(ListNode* head, int k) {
+	ListNode* curr = head;
+	int count = 0;
+	while (curr&&count != k)
+	{
+		curr = curr->next;
+		count++;
+	}
+	if (count == k)
+	{
+		curr = reverseKGroup(curr, k);
+		while (count-->0)
+		{
+			ListNode* tmp = head->next;
+			head->next = curr;
+			curr = head;
+			head = tmp;
+		}
+		head = curr;
+	}
+	return head;
+}
+
+//404  sum of left leaves;
+void dfsLeafLeaves(TreeNode* root, int &res)
+{
+	if (root == NULL || root->left == NULL && root->right == NULL)return;
+	if (root->left && root->left->left == NULL && root->left->right == NULL)
+	{
+		res += root->left->val;
+	}
+	if (root->left)
+	{
+		dfsLeafLeaves(root->left, res);
+	}
+	if (root->right)
+	{
+		dfsLeafLeaves(root->right, res);
+	}
+}
+int sumOfLeftLeaves(TreeNode* root) {
+	if (root == NULL || (root->left == NULL && root->right == NULL))return 0;
+	int res = 0;
+	dfsLeafLeaves(root, res);
+	return res;
+}
+
+int sumOfLeftLeaves(TreeNode* root) {
+	if (root == NULL)return 0;
+	int ans = 0;
+	if (root->left)
+	{
+		if (root->left->left == NULL && root->left->right == NULL)ans += root->left->val;
+		else ans += sumOfLeftLeaves(root->left);
+	}
+	ans += sumOfLeftLeaves(root->right);
+	return ans;
+}
+
+int sumOfLeftLeaves(TreeNode* root) {
+	if (root == NULL)return 0;
+	int ans = 0;
+	stack<TreeNode*>stk;
+	stk.push(root);
+	while (!stk.empty())
+	{
+		TreeNode* node = stk.top();
+		stk.pop();
+		if (node->left)
+		{
+			if (node->left->left == NULL && node->left->right == NULL)ans += node->left->val;
+			else stk.push(node->left);
+		}
+		if (node->right)stk.push(node->right);
+	}
+	return ans;
+}
+
+//410 split array largest sum
+bool doable(vector<int>& nums, int cuts, long long maximum)
+{
+	int acc = 0;// one part of the subarray
+	for (int num : nums)
+	{
+		if (acc + num <= maximum)acc += num;// if acc is still smaller than , then we can add
+		else {
+			cuts--;
+			acc = num;
+			if (cuts < 0)return false;// else we should cut it into two split two array
+		}
+	}
+	return true;
+}
+int splitArray(vector<int>& nums, int m) {
+	long long left = 0, right = 0, middle = 0;
+	for (int num : nums)// left is the smallest element we can do ,and right is the largest we can do
+	{
+		left = max(left, (long long)num);
+		right += num;
+	}
+	while (left < right)
+	{
+		middle = left + (right - left) / 2;
+		if (doable(nums, m - 1, middle))right = middle;//m-1 cuts
+		else left = middle + 1;
+	}
+	return left;
+}
+
+//255 verify oreorder sequence
+bool verifyPreorder(vector<int>& preorder) {
+	int index = -1, minValue = INT_MIN;
+	for (int x : preorder)
+	{
+		if (x<minValue)return false;
+		while (index >= 0 && preorder[index] <= x)
+		{
+			minValue = preorder[index--];
+		}
+		preorder[++index] = x;
+	}
+	return true;
+}
+//331 verify preordere serialize of a binary tere
+/*
+Some used stack. Some used the depth of a stack. Here I use a different perspective. In a binary tree, if we consider null as leaves, then
+
+all non-null node provides 2 outdegree and 1 indegree (2 children and 1 parent), except root
+all null node provides 0 outdegree and 1 indegree (0 child and 1 parent).
+Suppose we try to build this tree. During building, we record the difference between out degree and in degree diff = outdegree - indegree. When the next node comes, we then decrease diff by 1, because the node provides an in degree. If the node is not null, we increase diff by 2, because it provides two out degrees. If a serialization is correct, diff should never be negative and diff will be zero when finished.
+
+public boolean isValidSerialization(String preorder) {
+String[] nodes = preorder.split(",");
+int diff = 1;
+for (String node: nodes) {
+if (--diff < 0) return false;
+if (!node.equals("#")) diff += 2;
+}
+return diff == 0;
+}
+*/
+
+//morrisTraversalPreorder
+// Preorder traversal without recursion and without stack
+void morrisTraversalPreorder(TreeNode* root)
+{
+	while (root)
+	{
+		// If left child is null, print the current node data. Move to
+		// right child.
+		if (root->left == NULL)
+		{
+			printf("%d ", root->val);
+			root = root->right;
+		}
+		else
+		{
+			// Find inorder predecessor
+			 TreeNode* current = root->left;
+			while (current->right && current->right != root)
+				current = current->right;
+
+			// If the right child of inorder predecessor already points to
+			// this node
+			if (current->right == root)
+			{
+				current->right = NULL;
+				root = root->right;
+			}
+
+			// If right child doesn't point to this node, then print this
+			// node and make right child point to this node
+			else
+			{
+				printf("%d ", root->data);
+				current->right = root;
+				root = root->left;
+			}
+		}
+	}
+}
+
+//intersection of unsorted two arrays I
+// sort and use two pointers
+//hash table
+//sort one and use binary serach; binary search is easy
+
+public int[] intersection(int[] nums1, int[] nums2) {
+	Set<Integer> set = new HashSet<>();
+	Arrays.sort(nums1);
+	Arrays.sort(nums2);
+	int i = 0;
+	int j = 0;
+	while (i < nums1.length && j < nums2.length) {
+		if (nums1[i] < nums2[j]) {
+			i++;
+		}
+		else if (nums1[i] > nums2[j]) {
+			j++;
+		}
+		else {
+			set.add(nums1[i]);
+			i++;
+			j++;
+		}
+	}
+	int[] result = new int[set.size()];
+	int k = 0;
+	for (Integer num : set) {
+		result[k++] = num;
+	}
+	return result;
+}
+
+vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+	unordered_set<int> m(nums1.begin(), nums1.end());
+	vector<int> res;
+	for (auto a : nums2)
+		if (m.count(a)) {
+			res.push_back(a);
+			m.erase(a);
+		}
+	return res;
+}
+
+
+
+//intersection of two sorrted arrayII
+//high vote algorithms
+vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+	unordered_map<int, int> dict;
+	vector<int> res;
+	for (int i = 0; i < (int)nums1.size(); i++) dict[nums1[i]]++;
+	// count the times of the elements
+	for (int i = 0; i < (int)nums2.size(); i++)
+		if (dict.find(nums2[i]) != dict.end() && --dict[nums2[i]] >= 0) res.push_back(nums2[i]);
+	return res;
+}
+
+
+int printUnion(int arr1[], int arr2[], int m, int n)
+{
+	int i = 0, j = 0;
+	while (i < m && j < n)
+	{
+		if (arr1[i] < arr2[j])
+			printf(" %d ", arr1[i++]);
+		else if (arr2[j] < arr1[i])
+			printf(" %d ", arr2[j++]);
+		else
+		{
+			printf(" %d ", arr2[j++]);
+			i++;
+		}
+	}
+
+	/* Print remaining elements of the larger array */
+	while (i < m)
+		printf(" %d ", arr1[i++]);
+	while (j < n)
+		printf(" %d ", arr2[j++]);
+}
+
+
+/* Function prints Intersection of arr1[] and arr2[]
+m is the number of elements in arr1[]
+n is the number of elements in arr2[] */
+int printIntersection(int arr1[], int arr2[], int m, int n)
+{
+	int i = 0, j = 0;
+	while (i < m && j < n)
+	{
+		if (arr1[i] < arr2[j])
+			i++;
+		else if (arr2[j] < arr1[i])
+			j++;
+		else /* if arr1[i] == arr2[j] */
+		{
+			printf(" %d ", arr2[j++]);
+			i++;
+		}
+	}
+}
+
+//we can also do binary search if the two array length difference is significant 
+
+//Sort and two pointers Solution :
+//Time : O(max(m, n) log(max(m, n))) Space : O(m + n)
+
+class Solution {
+public:
+	vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+		sort(nums1.begin(), nums1.end());
+		sort(nums2.begin(), nums2.end());
+		int n1 = (int)nums1.size(), n2 = (int)nums2.size();
+		int i1 = 0, i2 = 0;
+		vector<int> res;
+		while (i1 < n1 && i2 < n2){
+			if (nums1[i1] == nums2[i2]) {
+				res.push_back(nums1[i1]);
+				i1++;
+				i2++;
+			}
+			else if (nums1[i1] > nums2[i2]){
+				i2++;
+			}
+			else{
+				i1++;
+			}
+		}
+		return res;
+	}
+};
+
+
+//longest common subsequence problem
+// dp[i][j]=s1[i-1]==s2[j-1]?dp[i-1][j-1]+1:max(dp[i-1][j],dp[i][j-1))]
+//
+
+/* A Naive recursive implementation of LCS problem */
+
+
+int max(int a, int b);
+
+/* Returns length of LCS for X[0..m-1], Y[0..n-1] */
+int lcs(char *X, char *Y, int m, int n)
+{
+	if (m == 0 || n == 0)
+		return 0;
+	if (X[m - 1] == Y[n - 1])
+		return 1 + lcs(X, Y, m - 1, n - 1);
+	else
+		return max(lcs(X, Y, m, n - 1), lcs(X, Y, m - 1, n));
+}
+
+/* Utility function to get max of 2 integers */
+int max(int a, int b)
+{
+	return (a > b) ? a : b;
+}
+
+
+//queen
+bool check(int* places, int k)
+{
+	for (int i = 0; i < k; ++i)
+	{
+		if (places[i] == places[k] || abs(places[i] - places[k]) == k - i)return false;
+	}
+	return true;
+}
+
+void dfs(int* places, vector<vector<string>>&res, int cur, int n)
+{
+	if (cur == n)
+	{
+		vector<string>ans;
+		string x;
+		for (int i = 0; i < n; ++i)
+		{
+			x.clear();
+			for (int j = 0; j < n; ++j)
+			{
+				x.push_back(places[i] == j ? 'Q' : '.');
+			}
+			ans.push_back(x);
+		}
+		res.push_back(ans);
+		return;
+	}
+	else if (cur > n)return;
+	for (int i = 0; i < n; ++i)
+	{
+		places[cur] = i;
+		if (check(places, cur))dfs(places, res, cur + 1, n);
+	}
+}
+
+vector<vector<string>> solveNQueens(int n) {
+	int* places = new int[n];
+	vector<vector<string>>res;
+	dfs(places, res, 0, n);
+	//delete[]places;
+	return res;
+}
+
+//124 bianry tree maximum path sum
+int dfs(TreeNode* root, int &res)
+{
+	if (root == NULL)return 0;
+	int l = dfs(root->left, res);
+	int r = dfs(root->right, res);
+	int ans = max(root->val, max(l, r) + root->val);
+	res = max(res, max(ans, root->val + l + r));
+	return ans;
+}
+
+int maxPathSum(TreeNode* root) {
+	if (root == NULL)return 0;
+	int res = INT_MIN;
+	dfs(root, res);
+	return res;
+}
+
+// tree diameter
+int diameter(Node root)
+{
+	/* base case if tree is empty */
+	if (root == null)
+		return 0;
+
+	/* get the height of left and right sub trees */
+	int lheight = height(root.left);
+	int rheight = height(root.right);
+
+	/* get the diameter of left and right subtrees */
+	int ldiameter = diameter(root.left);
+	int rdiameter = diameter(root.right);
+
+	/* Return max of following three
+	1) Diameter of left subtree
+	2) Diameter of right subtree
+	3) Height of left subtree + height of right subtree + 1 */
+	return Math.max(lheight + rheight + 1,
+		Math.max(ldiameter, rdiameter));
+
+}
+
+/* A wrapper over diameter(Node root) */
+int diameter()
+{
+	return diameter(root);
+}
+
+/*The function Compute the "height" of a tree. Height is the
+number f nodes along the longest path from the root node
+down to the farthest leaf node.*/
+static int height(Node node)
+{
+	/* base case tree is empty */
+	if (node == null)
+		return 0;
+
+	/* If tree is not empty then height = 1 + max of left
+	height and right heights */
+	return (1 + Math.max(height(node.left), height(node.right)));
+}
+
+//optimal
+
+int diameter(TreeNode* root, int& height)
+{
+	int lh = 0, rh = 0;
+	int ldimater = 0, rdiamter = 0;
+	if (root == NULL)
+	{
+		height = 0;
+		return 0;
+	}
+	ldimater = diameter(root, lh);
+	rdiamter = diameter(root, rh);
+	height = max(lh, rh) + 1;
+	return max(lh + rh + 1, max(ldimater, rdiamter));
+}
+
+
+//max path sum
+
+
+//DFS, 设dfs(root)返回的是包括root这个结点的单一路径上的最大值
+int dfs(TreeNode* root, int &res)
+{
+	if (root == NULL)return 0;
+	int l = dfs(root->left, res);
+	int r = dfs(root->right, res);
+	int ans = max(root->val, max(l, r) + root->val);
+	res = max(res, max(ans, root->val + l + r));
+	return ans;
+}
+
+int maxPathSum(TreeNode* root) {
+	if (root == NULL)return 0;
+	int res = INT_MIN;
+	dfs(root, res);
+	return res;
+}
+
+
+//tonight focuse
+//394 decode string
+string decodeString(string s) {
+		int pos = 0;
+		return helper(pos, s);
+	}
+	string helper(int& pos, string s) {
+		int num = 0;
+		string word = "";
+		for (; pos<s.size(); pos++) {
+			char cur = s[pos];
+			if (cur == '[') {
+				string curStr = helper(++pos, s);
+				for (; num>0; num--) word += curStr;// we have number curstr, so we should do a loop;
+			}
+			else if (cur >= '0' && cur <= '9') {
+				num = num * 10 + cur - '0';
+			}
+			else if (cur == ']') {
+				return word;
+			}
+			else {    // Normal characters
+				word += cur;
+			}
+		}
+		return word;
+	}
+
+
+string decodeString(string s) {
+	int i = 0;
+	return decodeString(s, i);
+}
+
+
+
+
+// this is my way
+
+
+string decodeString(string s) {
+	stack<string>res;
+	int n = s.size(), sum = 0, i = 0;
+	string tmp = "", strs = "";
+	while (i<n)
+	{
+		if (isdigit(s[i]))
+		{
+			while (i<n && isdigit(s[i]))
+			{
+				sum = 10 * sum + s[i] - '0';
+				i++;
+			}
+			res.push(to_string(sum));
+			sum = 0;
+		}
+		if (i<n && isalpha(s[i]))
+		{
+			while (i<n && isalpha(s[i]))
+			{
+				tmp.push_back(s[i]);
+				i++;
+			}
+			res.push(tmp);
+			tmp = "";
+		}
+		if (i<n && s[i] == '[')
+		{
+			res.push("[");
+			i++;
+			continue;
+		}
+		if (i<n && s[i] == ']')
+		{
+			string x = res.top();
+			res.pop();
+			while (!res.empty() && res.top() != "[") { x = res.top() + x; res.pop(); }
+			res.pop();
+			int xx = stoi(res.top());
+			string xxx = x;
+			while (xx-->1)
+			{
+				x += xxx;
+			}
+			res.pop();
+			while (!res.empty() && res.top() != "[") { x = res.top() + x; res.pop(); }
+			res.push(x);
+			i++;
+		}
+	}
+	string str = "";
+	while (!res.empty())
+	{
+		str = res.top();
+		res.pop();
+		strs = str + strs;;
+	}
+	return strs;
+}
+// tonight;/ t convert binary tree to double linkedlist
+
+//3 sum hash
+
+//sample revisoring http://www.1point3acres.com/bbs/forum.php?mod=viewthread&tid=210154&extra=page%3D1%26filter%3Dsortid%26sortid%3D311%26searchoption%5B3090%5D%5Bvalue%5D%3D2%26searchoption%5B3090%5D%5Btype%5D%3Dradio%26searchoption%5B3046%5D%5Bvalue%5D%3D2%26searchoption%5B3046%5D%5Btype%5D%3Dradio%26sortid%3D311
+
+// amazing number   Define amazing number as
+
+// 
+//Q1 ：移0，秒了Q2 : 给个正整数target和数组找是否有subarray sum等于target。。双指针秒，follow up有负数怎么办。。。我卡了半天。。最后10min想到hashset
+
+//binary tree ancestor of deepest leaf;
+//'Time complexity: O(n), Space complexity: O(h), height of the tree'
+struct info{
+	int depth;
+	TreeNode* node;
+	info() :depth(0),node(NULL){}
+};
+
+//deepest leaf
+info* findLca(TreeNode* root)
+{
+	if (root == NULL)return new info();
+	info* left = findLca(root->left);
+	info* right = findLca(root->right);
+	info* res = new info();
+	if (left->depth == right->depth)
+	{
+		res->node = root;
+		res->depth = left->depth+1;
+	}
+	else if (left->depth > right->depth)
+	{
+		res->node = left->node;
+		res->depth = left->depth + 1;
+	}
+	else
+	{
+		res->node = right->node;
+		res->depth = right->depth+1;
+	}
+	return res;
+}
+
+TreeNode* findLcaRucrusive(TreeNode* root)
+{
+	return findLca(root)->node;
+}
+
+//iterative way
+TreeNode* findLcaIterative(TreeNode* root)
+{
+	if (root == NULL)return NULL;
+	unordered_map<TreeNode*, TreeNode*>parent;
+	queue < TreeNode* >q;
+	TreeNode* left = NULL;
+	TreeNode* right = NULL;
+	q.push(root);
+	while (!q.empty())
+	{
+		int size = q.size();
+		while (size--)
+		{
+			TreeNode* node = q.front();
+			q.pop();
+			if (size == q.size() - 1)left = node;
+			if (size == 0)right = node;
+			if (node->left)
+			{
+				q.push(node->left);
+				parent[node->left] = node;
+			}
+			if (node->right)
+			{
+				q.push(node->right);
+				parent[node->right] = node;
+			}
+		}
+		while (left != right)
+		{
+			left = parent[left];
+			right = parent[right];
+		}
+		return left;
+	}
+}
+
+
+//multiple children
+
+struct TreeNodeMulti
+{
+	int val;
+	vector<TreeNodeMulti*>children;
+	TreeNodeMulti(int val) :val(val){}
+};
+
+struct result{
+	TreeNodeMulti* node;
+	int depth;
+	result(int depth, TreeNodeMulti*node)
+	{
+		depth = depth;
+		node = node;
+	}
+};
+
+
+result* dfs(TreeNodeMulti* root)
+{
+	if (root == NULL)return new result(0, NULL);
+	int depth = 0;
+	vector<result*>next;
+	for (auto child : root->children)
+	{
+		next.push_back(dfs(child));
+	}
+	result* deepest = new result(0, NULL);
+	result* deepest2 = new result(0, NULL);
+	for (auto res : next)
+	{
+		if (res->depth >= deepest->depth)
+		{
+			deepest2->node = deepest->node;
+			deepest2->depth = deepest->depth;
+			deepest->node = res->node;
+			deepest->depth = res->depth;
+		}
+	}
+	depth = 1 + deepest->depth;
+	if (deepest->depth == deepest2->depth)return new result(depth, root);
+	else return new result(depth, deepest->node);
+}
+TreeNodeMulti* findLca(TreeNodeMulti* root)
+{
+	return dfs(root)->node;
+}
+
+
+// sliding window maximum
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+	//monotonic deque;
+	vector<int>res;
+	deque<int>q;
+	int n = nums.size();
+	if (n == 0 || k == 0 || n<k)return res;
+	for (int i = 0; i<n; ++i)
+	{
+		if (!q.empty() && q.front()<i - k + 1)q.pop_front();
+		while (!q.empty() && nums[q.back()]<nums[i])q.pop_back();
+		q.push_back(i);
+		if (i >= k - 1)res.push_back(nums[q.front()]);
+	}
+	return res;
+}
+
+vector<int> minSlidingWindow(vector<int>& nums, int k) {
+	//monotonic deque;
+	vector<int>res;
+	deque<int>q;
+	int n = nums.size();
+	if (n == 0 || k == 0 || n<k)return res;
+	for (int i = 0; i<n; ++i)
+	{
+		if (!q.empty() && q.front()<i - k + 1)q.pop_front();
+		while (!q.empty() && nums[q.back()]<nums[i])q.pop_back();
+		q.push_back(i);
+		if (i >= k - 1)res.push_back(nums[q.front()]);
+	}
+	return res;
+}
+
+// balance parentheses in a string 
+
+//first, you can use stack
+//has bug
+
+// remove invalid parentheses
+//can not use
+// you can say that you can do thi by bfs delete
+
+// it was my mistake. BFS is always slow
+bool valid(string s)
+{
+	int count = 0;
+	for (char c : s)
+	{
+		if (c == '(')count++;
+		else if (c == ')')
+		{
+			if (count <= 0)return false;
+			count--;
+		}
+	}
+	return count == 0;
+}
+vector<string> removeInvalidParentheses(string s) {
+	vector<string>res;
+	if (valid(s))return{ s };
+	queue<string>q;
+	q.push(s);
+	string str;
+	int flag = true;
+	unordered_map<string, bool>mp;
+	mp[s] = true;//  it was my mistake, I forget to use this, as a result, many substrs are pushed into queue, so we should check whether it has been visited 
+	while (flag && !q.empty())
+	{
+		int size = q.size();
+		while (size--)
+		{
+			str = q.front();
+			q.pop();
+			int n = str.size();
+			for (int i = 0; i<n; ++i)
+			{
+				if (str[i] != '(' && str[i] != ')')continue;
+				string substr = str.substr(0, i) + str.substr(i + 1);
+				if (valid(substr) && !mp[substr])
+				{
+					flag = false;
+					mp[substr] = true;
+					res.push_back(substr);
+				}
+				if (!mp[substr])
+				{
+					q.push(substr);
+					mp[substr] = true;
+				}
+			}
+		}
+	}
+	return res;
+}
+
+// add all character first , then check if it is valid. otherwise you can delete ')'
+string deleteCloseParenthese(string input)
+{
+	int count = 0;
+	string result;
+	for (char letter : input)
+	{
+		result.push_back(letter);
+		if (letter == '(')count++;
+		else if (letter == ')')
+		{
+			if (count > 0)count--;
+			else result.pop_back();
+		}
+	}
+	return result;
+}
+string deleteOpenParenthese(string input)
+{
+	int count = 0,n=input.size();
+	string result;
+	for (int i = n - 1; i >= 0;--i)
+	{
+		result.push_back(input[i]);
+		if (input[i] == ')')count++;
+		else if (input[i] == '(')
+		{
+			if (count > 0)count--;
+			else result.pop_back();
+		}
+	}
+	reverse(result.begin(), result.end());
+	return result;
+}
+
+string balanceParenthese(string input)
+{
+	string result = deleteCloseParenthese(input);
+	result = deleteOpenParenthese(result);
+	return result;
+}
+
+
+// k points nearest k points
+//// Use quickSelect to find the kth nearest point to the origin point
+//'Time complexity: average O(n), worst O(n^2) when always pick the most right one -- the time complexity of quick select'
+struct Point{
+	int x, y;
+	Point(int x = 0, int y = 0) :x(x), y(y){}
+};
+
+
+int distance(Point point)
+{
+	return point.x*point.x + point.y*point.y;
+}
+
+int partition(vector<Point>&points, int left, int right)
+{
+	int begin = left, end = right;
+	Point key = points[begin];
+	int keydist = distance(key);
+	while (begin < end)
+	{
+		while (begin < end && distance(points[end]) >= keydist)end--;
+		points[begin] = points[end];
+		while (begin < end && distance(points[begin]) <= keydist)begin++;
+		points[end] = points[begin];
+	}
+	points[begin] = key;
+	return begin;
+}
+
+Point quickSelect(vector<Point>points, int left, int right, int k)
+{
+	int index = partition(points, left,  right);
+	if (index == k - 1)return points[k - 1];
+	else if (index > k)return quickSelect(points, left, index - 1, k);
+	else return quickSelect(points, index + 1, right, k);
+}
+Point findNearestKthPoint(vector<Point>points, int k)
+{
+	int left = 0, right = points.size() - 1;
+	return quickSelect(points, left, right, k);
+}
+
+// you can also use priority;
+
+struct cmp{
+	bool operator()(Point a, Point b)
+	{
+		return distance(a) < distance(b);
+	}
+};
+
+vector<Point>findNearEstKPoint(vector<Point>& points, int k)
+{
+	priority_queue<Point, vector<Point>, cmp>pq;
+	for (Point p : points)
+	{
+		if (pq.size() < k)pq.push(p);
+		else if (distance(pq.top()) > distance(p))
+		{
+			pq.pop();
+			pq.push(p);
+		}
+	}
+	vector<Point>res;
+	while (!pq.empty())
+	{
+		res.push_back(pq.top());
+		pq.pop();
+	}
+	return res;
+}
+// decode all of string
+
+void helper(vector<string>& res, int pos, string num, string way)
+{
+	if (pos == num.size())
+	{
+		res.push_back(way);
+		return;
+	}
+	string digits = num.substr(pos, 1);
+	int number = stoi(digits);
+	if (number == 0)return;
+	helper(res, pos + 1, num, way + char(number + 'A' - 1));
+	if (pos < num.size() - 1)
+	{
+		string digit2 = num.substr(pos, 2);
+		int number2 = stoi(digit2);
+		if (number <= 26)helper(res, pos + 2, num, way + (char)(number2 + 'A' - 1));
+	}
+}
+vector<string>decode(string num)
+{
+	vector<string>res;
+	helper(res, 0, num, "");
+}
+
+
+
+//22 generate parentheses
+void generateBacktracing(vector<string>& res, string path, int left, int right, int n)
+{
+	if (left == n && right == n)
+	{
+		res.push_back(path);
+		return;
+	}
+	if (left < n)
+	{
+
+		generateBacktracing(res, path + "(", left + 1, right, n);
+	}
+	if (right < left)
+	{
+		generateBacktracing(res, path + ")", left, right + 1, n);
+	}
+}
+
+vector<string> generateParenthesis(int n) {
+	vector<string>res;
+	string path;
+	generateBacktracing(res, path, 0, 0, n);
+	return res;
+}
+
+
+void backtracking(vector<string>& res, string& path, stack<int>& input, stack<int>& stk, int n)
+{
+	if (input.empty() && stk.empty() && path.size() == 2 * n)
+	{
+		res.push_back(path);
+		return;
+	}
+	if (!input.empty())
+	{
+		int top = input.top();
+		input.pop();
+		stk.push(top);
+		path.push_back('(');
+		backtracking(res, path, input, stk, n);
+		stk.pop();
+		path.pop_back();
+		input.push(top);
+	}
+	if (!stk.empty())
+	{
+		int top = stk.top();
+		stk.pop();
+		path.push_back(')');
+		backtracking(res, path, input, stk, n);
+		path.pop_back();
+		stk.push(top);
+	}
+
+}
+vector<string> generateParenthesis(int n) {
+	vector<string>res;
+	string path;
+	stack<int>input;
+	stack<int>stk;
+	for (int i = 1; i <= n; ++i)
+	{
+		input.push(i);
+	}
+	backtracking(res, path, input, stk, n);
+	return res;
+}
+
+
+
+
+
+
+////reconstruct BST from pre-prder sequence 
+
+//'Time complexity: O(NlgN)'
+TreeNode* constructTreeFromPreorder(vector<int>& preorder, int begin, int end)
+{
+	if (begin > end)return NULL;
+	else if (begin == end)return new TreeNode(preorder[begin]);
+	int rightIndex = begin + 1;
+	TreeNode* root = new TreeNode(preorder[begin]);
+	while (rightIndex <= end && preorder[rightIndex] < root->val)rightIndex++;
+	root->left = constructTreeFromPreorder(preorder, begin + 1, rightIndex-1);// find the first larget one than root
+	root->right = constructTreeFromPreorder(preorder, rightIndex, end);
+	return root;
+}
+
+TreeNode* constructFromPreorder(vector<int>& preorder)
+{
+	if (preorder.empty())return NULL;
+	return constructTreeFromPreorder(preorder, 0, preorder.size() - 1);
+
+}
+
+//move char
+// move zero like
+// traverse the string and put the non-target character into the 
+// char array one by one, and put the target character at the end
+class MoveChar {
+	public String removeChar(char[] input, char k) {
+		int fast = 0;
+		int slow = 0;
+		while (fast < input.length) {
+			while (slow < input.length && input[slow] != k) {
+				slow++;
+			}
+			fast = slow;
+			while (fast < input.length && input[fast] == k) {
+				fast++;
+			}
+			while (fast < input.length && input[fast] != k) {
+				input[slow] = input[fast];
+				input[fast] = k;
+				fast++;
+				slow++;
+			}
+		}
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < slow; i++) {
+			result.append(input[i]);
+		}
+		return result.toString();
+	}
+}
+
+// subarrayEqualsK( consecutive sequence sum equals to k)
+bool findSubarray(vector<int>input, int k)
+{
+	set<int>sums;
+	int sum = 0;
+	for (int number : input)
+	{
+		sum += number;
+		if (sums.find(sum - k))return true;
+		sums.insert(sum);
+	}
+	return false;
+}
+
+
+// min depth
+//bfs
+int minDepth(TreeNode* root) {
+	if (root == NULL)return 0;
+	int ans = 1;
+	queue<TreeNode*>q;
+
+	q.push(root);
+	TreeNode* node = NULL;
+	while (!q.empty())
+	{
+		int size = q.size();
+		while (size--)
+		{
+			node = q.front();
+			q.pop();
+			if (node->left == NULL&&node->right == NULL)return ans;
+			if (node->left)q.push(node->left);
+			if (node->right)q.push(node->right);
+		}
+		ans++;
+	}
+	return ans;
+}
+
+int minDepth(TreeNode* root) {
+	if (root == NULL)return 0;
+	if (root->left == NULL)return minDepth(root->right) + 1;
+	else if (root->right == NULL)return minDepth(root->left) + 1;
+	else return min(minDepth(root->left), minDepth(root->right)) + 1;
+}
+
+// subarray sum equal k
+// window 
+//two pointers
+// maximum can not use the window, but minimum can use the window
+bool minSubArrayLen(int s, vector<int>nums)
+{
+	int begin = 0, end = 0, n = nums.size(), sum = 0;
+	while (end < n)
+	{
+		sum += nums[end++];
+		while (sum > s)
+		{
+			sum -= nums[begin++];
+		}
+		if (sum == s)return true;
+	}
+	return false;
+}
+
+bool subarraysum(int k, vector<int>& nums)
+{
+	int sum = 0;
+	unordered_set<int>sets;
+	for (int x : nums)
+	{
+		sum += x;
+		if (sets.find(sum - k) != sets.end())return true;
+		sets.insert(x);
+	}
+	return false;
+}
+
+
+// insert node to sorted linkedlist
+// two nodes
+ListNode* insert(ListNode* head, ListNode* node)
+{
+	ListNode* first = new ListNode(0);
+	first->next = head;
+	ListNode* p = head;
+	ListNode* pre = first;
+	while (p && p->val < node->val)
+	{
+		p = p->next;
+		pre = pre->next;
+	}
+	pre->next = node;
+	node->next = p;
+	return first->next;
+}
+
+//read4
+
+
+//stock
+
+int maxProfit(vector<int>& prices)
+{
+	int profit = 0;
+	int min1 = INT_MIN;
+	for (int price : prices)
+	{
+		min1 = min(price, min1);
+		profit = max(profit, price - min1);
+	}
+	return profit;
+}
+
+// do the transction every day
+int maxProfit(vector<int>& prices)
+{
+	int profit = 0;
+	for (int i = 1; i < prices.size(); ++i)
+	{
+		profit += max(prices[i] - prices[i - 1], 0);
+	}
+	return profit;
+}
+
+
+// best time to buy stock 3
+
+
+// use an array to record the max profit we can make before today
+// use anothter array to record the max profit we can make after doday
+// so max profit we can make =max(before[i]+after[i]) 0<=i<=lenght
+int profit(vector<int>& prices)
+{
+	if (prices.empty())return 0;
+	int n = prices.size();
+	vector<int>first(n);
+	vector<int>second(n);
+	int min1 = prices[0];
+	int maxProfit = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		min1 = min(min1, prices[i]);
+		maxProfit = max(maxProfit, prices[i] - min1);
+		first[i] = maxProfit;
+	}
+	int max1 = prices[n - 1];
+	maxProfit = 0;
+	for (int i = n - 1; i >= 0; --i)
+	{
+		max1 = max(max1, prices[i]);
+		maxProfit = max(max1 - prices[i], maxProfit);
+		second[i] = maxProfit;
+	}
+	maxProfit = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		maxProfit = max(first[i] + second[i], maxProfit);
+	}
+	return maxProfit;
+}
+
+
+
+//with cool down
+int maxProit1(vector<int>& prices)
+{
+	if (prices.empty())return 0;
+	int n = prices.size();
+	vector<int>sell(n, 0);
+	vector<int>buy(n, 0);
+	sell[0] = 0;
+	buy[0] = -prices[0];
+	for (int i = 1; i < n; ++i)
+	{
+		sell[i] = max(buy[i - 1] + prices[i], sell[i - 1]);// sell or not sell
+		if (i == 1)buy[i] = max(buy[0], 0 - prices[i]);
+		else buy[i] = max(buy[i - 1], sell[i - 2] - prices[i]);// buy 
+	}
+	return sell[n - 1];
+}
+
+//save space with cool down
+
+int maxProfit(vector<int>& prices)
+{
+	int sell = 0, prev_sell = 0, buy = INT_MIN, prev_buy = 0;
+	for (int price : prices)
+	{
+		prev_buy = buy;
+		buy = max(prev_sell - price, prev_buy);
+		prev_sell = sell;
+		sell = max(prev_buy + price, prev_sell);
+	}
+	return sell;
+}
+
+// print by column
+//class PrintByColumn {
+//	private int mostLeft = 0;
+//	public void print(TreeNode root) {
+//		List<List<Pair>> paths = new ArrayList<>();
+//		helper(root, 0, new ArrayList<Pair>(), paths);
+//		for (List<Pair> path : paths) {
+//			for (Pair pair : path) {
+//				int gap = -mostLeft - (-pair.col);
+//				while (gap > 0) {
+//					System.out.print("*");
+//					gap--;
+//				}
+//				System.out.print(pair.val);
+//			}
+//			System.out.println();
+//		}
+//	}
+//	private void helper(TreeNode root, int col, List<Pair> list, List<List<Pair>> paths) {
+//		list.add(new Pair(root.val, col));
+//		mostLeft = Math.min(mostLeft, col);
+//		if (root.left == null && root.right == null) {
+//			paths.add(new ArrayList<Pair>(list));
+//		}
+//		if (root.left != null) {
+//			helper(root.left, col - 1, list, paths);
+//		}
+//		if (root.right != null) {
+//			helper(root.right, col + 1, list, paths);
+//		}
+//		list.remove(list.size() - 1);
+//	}
+//	class Pair {
+//		int col;
+//		int val;
+//		public Pair(int val, int col) {
+//			this.val = val;
+//			this.col = col;
+//		}
+//	}
+//}
+
+// check duplicate numbers in window k
+// my answer, not verified
+bool containsNerabyDuplicate(vector<int>&nums, int k)
+{
+	unordered_set<int>sets;
+	int n = nums.size();
+	for (int i = 0; i < n; ++i)
+	{
+		if (i < k)sets.insert(nums[i]);
+		else{
+			if (sets.size() < k)return true;
+			sets.insert(nums[i]);
+			sets.erase(nums[i - k]);
+		}
+	}
+	return false;
+}
+// others' answer
+
+bool containsNearbyDuplicate(vector<int>nums, int k)
+{
+	unordered_set<int>window;
+	int low = 0;
+	int high = 0;
+	while (high < nums.size())
+	{
+		if (window.size() >= k)
+		{
+			window.erase(nums[low]);
+			low++;
+		}
+		if (window.find(nums[high])!=window.end())return true;
+		else
+		{
+			window.insert(nums[high++]);
+		}
+	}
+	return false;
+}
+
+
+/*
+
+public boolean containsNearbyDuplicate(int[] nums, int k) {
+HashMap<Integer, Integer> map = new HashMap<>();
+for (int i = 0; i < nums.length; i++) {
+if (map.containsKey(nums[i]) && Math.abs(map.get(nums[i]) - i) <= k) {
+return true;
+}
+else {
+map.put(nums[i], i);
+}
+}
+return false;
+}
+*/
+
+// find anagrams
+//string permutation
+vector<int> findAnagrams(string haystack, string needle) {
+	vector<int>res;
+	if (haystack.empty() || needle.empty())return res;
+	int m[256] = { 0 };
+	for (char c : needle)m[c]++;
+	int left = 0, right = 0, count = needle.size();
+	while (right < haystack.size())
+	{
+		if (m[haystack[right++]]-- >0)count--;
+		if (count == 0)res.push_back(left);
+		if (right - left == needle.size() && ++m[haystack[left++]]>0)count++;
+	}
+	return res;
+}
+
+//leetcode 30 substring with concatenation of all words
+vector<int> findSubstring(string S, vector<string>& L) {
+	vector<int> ans;
+	int n = S.size(), cnt = L.size();
+	if (n <= 0 || cnt <= 0) return ans;
+
+	// init word occurence
+	unordered_map<string, int> dict;
+	for (int i = 0; i < cnt; ++i) dict[L[i]]++;
+
+	// travel all sub string combinations
+	int wl = L[0].size();
+	for (int i = 0; i < wl; ++i) {
+		int left = i, count = 0;
+		unordered_map<string, int> tdict;
+		for (int j = i; j <= n - wl; j += wl) {
+			string str = S.substr(j, wl);
+			// a valid word, accumulate results
+			if (dict.count(str)) {
+				tdict[str]++;
+				if (tdict[str] <= dict[str])
+					count++;
+				else {
+					// a more word, advance the window left side possiablly
+					while (tdict[str] > dict[str]) {
+						string str1 = S.substr(left, wl);
+						tdict[str1]--;
+						if (tdict[str1] < dict[str1]) count--;
+						left += wl;
+					}
+				}
+				// come to a result
+				if (count == cnt) {
+					ans.push_back(left);
+					// advance one word
+					tdict[S.substr(left, wl)]--;
+					count--;
+					left += wl;
+				}
+			}
+			// not a valid word, reset all vars
+			else {
+				tdict.clear();
+				count = 0;
+				left = j + wl;
+			}
+		}
+	}
+
+	return ans;
+}
+
+
+//kmp algorithms
+
+vector<int> buildnext(string p)
+{
+	int n = p.size();
+	vector<int>f(n + 1, 0);
+	for (int i = 1; i<n; ++i)
+	{
+		int j = f[i];
+		while (j && p[j] != p[i])j = f[j];
+		f[j + 1] = p[j] == p[i] ? j + 1 : j;
+	}
+	return f;
+}
+
+void kmp(string t, string p)
+{
+	int n = t.size(), m = p.size();
+	vector<int>next = buildnext(p);
+	for (int i = 0, j = 0; i<n; ++i)
+	{
+		while (j && t[i] != p[j])j = next[j];
+		if (p[j] == t[i])j++;
+		if (j == m)
+		{
+			printf("Pattern occurs with shift:%d \n", (i - m + 1));
+		}
+	}
+}
+
+
+//dot product
+// you can use unordred_map
+// you can also use the vector<pair<int,int>>;
+
+
+//time complexity O(max(LenA, LenB);
+int dotProduct(vector<vector<int>>& A, vector<vector<int>>& B)
+{
+	int sum = 0;
+	int indexA = 0;
+	int indexB = 0;
+	while (indexA < A.size() && indexB < B.size())
+	{
+		if (A[indexA][0] == B[indexB][0])
+		{
+			sum += A[index][1] * B[indexB][1];
+			indexA++;
+			indexB++;
+		}
+		else if (A[indexA][0]>B[indexB][0])indexB++;
+		else indexA++;
+	}
+	return sum;
+}
+
+
+// binary search
+
+int binarySearch(vector<vector<int>>&B, int index)
+{
+	int low = 0, high = B.size() - 1;
+	while (low < high)
+	{
+		int mid = low + (high - low) / 2;
+		if (B[mid][0] == index)return mid;
+		else if (B[mid][0] > index)high = mid;
+		else low = mid + 1;
+	}
+	return B[low][0] == index ? low : -1;
+}
+int dotProduct(vector<vector<int>>A, vector<vector<int>>B)
+{
+	int sum = 0;
+	for (vector<int>pair : A)
+	{
+		int index = pair[0];
+		int indexB = binarySearch(B, index);
+		if (indexB != -1)sum += pair[1] * B[indexB][1];
+	}
+	return sum;
+}
+
+
+//amazing number
+public static int amazingNumber(int[] nums) {
+	int n = nums.length;
+		// Keeps track of all the intervals that after right-shifting index, some numbers become amazing number.
+		int[] shifts = new int[n];
+	for (int i = 0; i < n; i++) {
+		// If the current number is negative or larger than the biggest index, it won't affect the final result.. visit 1point3acres.com for more.
+		if (nums[i] >= n || nums[i] <= 0) continue;
+
+		if (nums[i] > i) {
+			// Right shift index i + 1 --> the current index would be n-1 after shifting
+			shifts[i + 1] += 1;
+			if (nums[i] > i + 1) shifts[i + 1 + n - nums[i]] -= 1;
+		}
+		else {
+			// There would be two intervals for each nums[i] <= i
+			shifts[0] += 1;
+			shifts[i - nums[i] + 1] -= 1;
+
+			if (i != n - 1) shifts[i + 1] += 1;
+		}
+	}
+
+	int sum = 0, max = 0, index = 0;
+	for (int i = 0; i < shifts.length; i++) {
+		sum += shifts[i];
+		if (sum > max) {
+			max = sum;
+			index = i; -google 1point3acres
+		}
+	}
+
+	return index;
+}
+
+//413 && 446 
+//Arithmetic Slices
+//Arithmetic Slices II - Subsequence
+int numberOfArithmeticSlices(vector<int>& nums) {
+	int n = nums.size();
+	if (n<3)return 0;
+	vector<int>dp(n + 1, 0);
+	for (int i = 3; i <= n; ++i)
+	{
+		int j = i;
+		int count = 0;
+		while (j >= 3 && 2 * nums[j - 2] == nums[j - 1] + nums[j - 3]){ j--; count++; }
+		dp[i] = dp[i - 1] + count;
+	}
+	return dp[n];
+}
+// better solution 
+int numberOfArithmeticSlices(vector<int>& nums)
+{
+	int curr = 0, sum = 0,n=nums.size();
+	for (int i = 2; i < n; ++i)
+	{
+		if (nums[i] + nums[i - 2] == 2 * nums[i - 1])
+		{
+			curr++;
+			sum += curr;
+		}
+		else curr = 0;
+	}
+	return sum;
+}
+
+// 446 Arithmetic Slices II - Subsequence
+//Both time and space complexity are O(n ^ 2)
+int numberOfArithmeticSlices(vector<int>& nums) {
+	//dynamic programming
+	int ans = 0, n = nums.size();
+	if (nums.empty())return ans;
+	vector<unordered_map<int, int>>dp(n);
+	for (int i = 1; i < n; ++i)
+	{
+		long long diff = 0;
+		for (int j = i - 1; j >= 0; --j)
+		{
+			diff = (long long)nums[i] - (long long)nums[j];
+			if (dp[j].count(diff) > 0)
+			{
+				ans += dp[j][diff];// this is 数列，3个数是一个数列，不仅仅是差值了。
+				dp[i][diff] += dp[j][diff];//这只是存的差值
+			}
+			++dp[i][diff];
+		}
+	}
+	return ans;
+}
+
+//longest Arithmetic sequence
+// the idea is to maintain a 2d array, called length[input.length][input.length]
+// length[i][j] means the length of the arithmetic that ends with input[i] and input[j]
+//and a hashamp to record the index of every nunber
+// we traverse the input from index 1 to the end
+//everytime we meet a number, fix this as the end of sequence
+// then traverse back tand try to make every number as the second number 
+// when we fix one as the second last one number ,we calculate the gap as input[last]-input[secondlast]
+//look into hashmap to  find is there a number in the input equals to input[secondlast]-gap;
+// and check its index whether it is samller than secondlast;
+//if it is, then this is the thrid last number, and we should alreay have length[thirdLast][secondLast]
+//then the length[secondlst][last]=length[thirdlast][secondlast]+1;
+//if it is not ,we make length[second][last]=2--- those two number are the only number int the arithmetic
+
+
+//time O(N2) SPACE COMPLEXITY: O(N2) for only return length
+int findLongest(vector<int>input)
+{
+	if (input.size() < 2)return 2;
+	int maxLen = 2,n=input.size();
+	vector<vector<int>>length(n, vector<int>(n, 0));
+	unordered_map<int, vector<int>>valueToIndex;
+	for (int i = 0; i < n; ++i)valueToIndex[input[i]].push_back(i);
+	for (int index = 1; index < n; ++index)
+	{
+		for (int secondLast = index - 1; secondLast >= 0; --secondLast)
+		{
+			int gap = input[index] - input[secondLast];
+			int next = input[secondLast] - gap;
+			if (valueToIndex.find(next) != valueToIndex.end())
+			{
+				int nextIndex = -1;
+				for (int j = valueToIndex[next].size() - 1; j >= 0; --j)
+				{
+					if (valueToIndex[next][j] < secondLast)
+					{
+						nextIndex = valueToIndex[next][j];
+						break;
+					}
+				}
+				if (nextIndex != -1)
+				{
+					length[secondLast][index] = length[nextIndex][secondLast] + 1;
+					maxLen = max(maxLen, length[secondLast][index]);
+				}
+			}
+			if (length[secondLast][index] == 0)length[secondLast][index] = 2;
+		}
+	}
+	return maxLen;
+
+}
+
+
+
+
+// print out the sequence
+
+//'Time complexity: O(n^2), space complexity: O(n^2 * m) --m is the average length of all the arithmetic sequence'
+vector<int>printLongest(vector<int>input)
+{
+	vector<int>res;
+	if (input.size() <= 2)return input;
+	int maxLen = 0,n=input.size();
+	vector<vector<vector<int>>>length(n, vector<vector<int>>(n, vector<int>()));
+	unordered_map<int, vector<int>>valueToIndex;
+	for (int i = 0; i < n; ++i)valueToIndex[input[i]].push_back(i);
+	for (int index = 1; index < n; ++index)
+	{
+		for (int secondLast = index - 1; secondLast >= 0; --secondLast)
+		{
+			int gap = input[index] - input[secondLast];
+			int next = input[secondLast] - gap;
+			if (valueToIndex.find(next) != valueToIndex.end())
+			{
+				int nextIndex = -1;
+				for (int j = valueToIndex[next].size() - 1; j >= 0; --j)
+				{
+					if (valueToIndex[next][j] < secondLast)
+					{
+						nextIndex = valueToIndex[next][j];
+						break;
+					}
+				}
+				if (nextIndex != -1)
+				{
+					length[secondLast][index].push_back(input[index]);
+					if (maxLen < length[secondLast][index].size())
+					{
+						res = length[secondLast][index];
+						maxLen = res.size();
+					}
+				}
+			}
+			if (length[secondLast][index].empty())
+			{
+				length[secondLast][index].push_back(input[secondLast]);
+				length[secondLast][index].push_back(input[index]);
+			}
+		}
+	}
+	return res;
+}
+
+//product of elements in the array some thing like the sets;
+void dfs(unordered_set<int>& res, vector<int>& input, vector<int>& path, int pos)
+{
+	if (!path.empty())
+	{
+		int re = 1;
+		for (int x : path)re *= x;
+		res.insert(re);
+		//return;
+	}
+	for (int i = pos; i <input.size(); ++i)
+	{
+		path.push_back(input[i]);
+		dfs(res, input, path, i + 1);
+		path.pop_back();
+	}
+}
+vector<int>product(vector<int>& input)
+{
+	unordered_set<int>res;
+	vector<int>path;
+	sort(input.begin(), input.end());
+	dfs(res, input, path, 0);
+	vector<int>ans(res.begin(), res.end());
+	return ans;
+}
+
+
+//combination sum
+void dfs(vector<vector<int>>& res, vector<int>& path, int n, int k, int cur)
+{
+	if (path.size() == k)
+	{
+		res.push_back(path);
+		return;
+	}
+	else if (path.size() > k)return;
+	for (int i = cur; i <= n; ++i)
+	{
+		path.push_back(i);
+		dfs(res, path, n, k, i + 1);
+		path.pop_back();
+	}
+}
+vector<vector<int>> combine(int n, int k) {
+	vector<vector<int>>res;
+	vector<int>path;
+	dfs(res, path, n, k, 1);
+	return res;
+}
+
+//combination sum
+void backtracking(vector<vector<int>>&res, vector<int>& path, vector<int> candidates, int target, int cur)
+{
+	if (target == 0)
+	{
+		res.push_back(path);
+		return;
+	}
+	else if (target < 0)return;
+	for (int i = cur; i < candidates.size(); ++i)
+	{
+		if (target >= candidates[i])
+		{
+			path.push_back(candidates[i]);
+			backtracking(res, path, candidates, target - candidates[i], i);
+			path.pop_back();
+		}
+	}
+}
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+	sort(candidates.begin(), candidates.end());
+	vector<vector<int>>res;
+	vector<int>path;
+	backtracking(res, path, candidates, target, 0);
+	return res;
+}
+
+
+//II
+void dfs(vector<vector<int>> &res, vector<int> &path, vector<int>& candidates, int target, int cur)
+{
+	if (target == 0)
+	{
+		res.push_back(path);
+		return;
+	}
+	else if (target<0)return;
+	for (int i = cur; i<candidates.size(); ++i)
+	{
+		if (i>cur&& candidates[i] == candidates[i - 1])continue;
+		if (target >= candidates[i])
+		{
+			path.push_back(candidates[i]);
+			dfs(res, path, candidates, target - candidates[i], i + 1);
+			path.pop_back();
+		}
+		else return;
+	}
+}
+vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+	vector<vector<int>>res;
+	vector<int>path;
+	if (candidates.empty() || target <= 0)return res;
+	sort(candidates.begin(), candidates.end());
+	dfs(res, path, candidates, target, 0);
+	return res;
+}
+
+///iii
+void dfs(vector<vector<int>> &res, vector<int> &path, int k, int n, int cur)
+{
+	if (path.size() == k && n == 0)
+	{
+		res.push_back(path);
+		return;
+	}
+	for (int i = cur; i <= 9; ++i)
+	{
+		if (n >= i)
+		{
+			path.push_back(i);
+			dfs(res, path, k, n - i, i + 1);
+			path.pop_back();
+		}
+	}
+}
+vector<vector<int>> combinationSum3(int k, int n) {
+	vector<vector<int>>res;
+	if (k <= 0 || n <= 0)return res;
+	vector<int>path;
+	dfs(res, path, k, n, 1);
+	return res;
+}
+
+
+// get next inorder 
+TreeNode* getNext(TreeNode* x)
+{
+	if (x == NULL)return NULL;
+	TreeNode* successor = NULL;
+	if (x->right)
+	{
+		successor = x->right;
+		while (successor->left)successor = successor->left;
+	}
+	else
+	{
+		successor = x->parent;
+		while (successor && successor->rgiht = x)
+		{
+			x = x->parent;
+			successor = successor->parent;
+		}
+	}
+	return successor;
+}
+
+
+///
+/*
+
+给一个正数n，打印出所有相加的组合
+例如10可以打印出 鏉ユ簮涓€浜�.涓夊垎鍦拌鍧�.
+1+1+1+...1. Waral 鍗氬鏈夋洿澶氭枃绔�,
+1+2+1+...1
+..
+9+1
+10
+
+*/
+
+//actually this is combination sum
+
+// find k th smallest from sorted arrays;
+// merge k sorted arrays
+// 23 merge k sorted lists
+
+struct ListNode{
+	int val;
+	ListNode* next;
+	ListNode(int val) :val(val), next(nullptr){}
+};
+
+struct cmp{
+	bool operator()(ListNode* a, ListNode* b)
+	{
+		return a->val>b->val;
+	}
+};
+
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+	priority_queue<ListNode*, vector<ListNode*>, cmp>pq;
+	for (ListNode* li : lists)if (li)pq.push(li);
+	ListNode* first = new ListNode(0);
+	ListNode* node = first;
+	while (!pq.empty())
+	{
+		node->next = pq.top();
+		node = node->next;
+		pq.pop();
+		if (node && node->next)pq.push(node->next);
+		if (pq.size() == 1)break;
+	}
+	node->next = pq.empty() ? NULL : pq.top();
+	return first->next;
+}
+
+struct cmp{
+	bool operator()(pair<vector<int>::iterator, vector<int>::iterator> it1, pair<vector<int>::iterator, vector<int>::iterator> it2)
+	{
+		return *(it1.first) > *(it2.first);
+	}
+};
+
+int kthsmallest(vector<vector<int>>res, int k)
+{
+	priority_queue<pair<vector<int>::iterator, vector<int>::iterator>, vector<pair<vector<int>::iterator, vector<int>::iterator>>, cmp>pq;
+	for (int i = 0; i < res.size(); ++i)if (!res[i].empty())pq.push(make_pair(res[i].begin(), res[i].end()));
+	int count = 0, ans = 0;
+	while (!pq.empty())
+	{
+		vector<int>::iterator it = pq.top().first;
+		vector<int>::iterator end = pq.top().second;
+		pq.pop();
+		count++;
+		ans = (*it);
+		if (count == k)return ans;
+		if (it + 1 != end)pq.push(make_pair(it + 1, end));
+	}
+	return 0;
+}
+
+//find median of sorted arrays
+struct cmp{
+	bool operator()(pair<vector<int>::iterator, vector<int>::iterator> it1, pair<vector<int>::iterator, vector<int>::iterator> it2)
+	{
+		return *(it1.first) > *(it2.first);
+	}
+};
+
+double findMedian(vector<vector<int>>res)
+{
+	priority_queue<pair<vector<int>::iterator, vector<int>::iterator>, vector<pair<vector<int>::iterator, vector<int>::iterator>>, cmp>pq;
+	for (int i = 0; i < res.size(); ++i)if (!res[i].empty())pq.push(make_pair(res[i].begin(), res[i].end()));
+	int count = 0, ans = 0, total = 0, prev = 0;
+	for (int i = 0; i < res.size(); ++i)total += res[i].size();
+	while (!pq.empty())
+	{
+		vector<int>::iterator it = pq.top().first;
+		vector<int>::iterator end = pq.top().second;
+		pq.pop();
+		count++;
+		prev = ans;
+		ans = (*it);
+		if (count == total / 2 + 1)break;
+		if (it + 1 != end)pq.push(make_pair(it + 1, end));
+	}
+	if (total & 0x1)return 1.0*ans;
+	else return (ans*1.0 + prev*1.0) / 2.0;
+}
+
+
+//// Use minHeap to poll out the interval with smallest start time
+// Check if it has next interval to push into heap in its list
+// Then check heap.peek(), which should always with the smallest start time
+// check if heap.peek().start <= curInterval.end
+// Then we need to merge. poll out this interval and merge
+// curInterval.end = Math.max(curInterval.end, heap.peek().end)
+// Keep doing the operation above util heap.peek().start > curInterval.end
+// Add curInterval to result.
+/*'Time complexity: O(nlgk) -- k lists of interval, total number of interval is n
+Space complexity : O(k) --space of min heap'
+class MergeKthSortedIntervals {
+	public List<Interval> merge(Interval[][] intervals) {
+		List<Interval> result = new ArrayList<>();
+		if (intervals.length == 0) {
+			return result;
+		}
+		PriorityQueue<IntervalContainer> minInterval = new PriorityQueue<>(intervals.length, new Comparator<IntervalContainer>() {
+			@Override
+				public int compare(IntervalContainer inter1, IntervalContainer inter2) {
+				return inter1.interval.start - inter2.interval.start;
+			}
+		});
+		for (int i = 0; i < intervals.length; i++) {
+			if (intervals[i].length > 0) {
+				minInterval.add(new IntervalContainer(intervals[i][0], 0, i));
+			}
+		}
+		while (!minInterval.isEmpty()) {
+			IntervalContainer curContainer = minInterval.poll();
+			addNextToMinInterval(minInterval, curContainer, intervals);
+			while (!minInterval.isEmpty() && minInterval.peek().interval.start <= curContainer.interval.end) {
+				IntervalContainer nextContainer = minInterval.poll();
+				addNextToMinInterval(minInterval, nextContainer, intervals);
+				curContainer.interval.end = Math.max(curContainer.interval.end, nextContainer.interval.end);
+			}
+			result.add(new Interval(curContainer.interval.start, curContainer.interval.end));
+		}
+		return result;
+	}
+	private void addNextToMinInterval(PriorityQueue<IntervalContainer> minInterval, IntervalContainer container, Interval[][] intervals) {
+		if (intervals[container.listIndex].length - 1 > container.index) {
+			minInterval.add(
+				new IntervalContainer(
+				intervals[container.listIndex][container.index + 1],
+				container.index + 1,
+				container.listIndex));
+		}
+	}
+
+}
+
+class IntervalContainer {
+	public Interval interval;
+	public int index;
+	public int listIndex;
+	public IntervalContainer(Interval interval, int index, int listIndex) {
+		this.interval = interval;
+		this.index = index;
+		this.listIndex = listIndex;
+	}
+}
+
+class Interval {
+	public int start;
+	public int end;
+	public Interval(int start, int end) {
+		this.start = start;
+		this.end = end;
+	}
+}
+*/
+
+
+// arrangeMissions
+//task
+//schedule
+//gap 
+//cooldown time
+string arrange(string input, int k)
+{
+	if (input.size() < 1)return input;
+	string res;
+	unordered_map<char, int>missionTotime;
+	int time = 0, n = input.size();
+	for (int i = 0; i < n; ++i)
+	{
+		time++;
+		if (missionTotime.find(input[i]) == missionTotime.end() || time - missionTotime[input[i]] > k)
+		{
+			missionTotime[input[i]] = time;
+		}
+		else
+		{
+			int gap = k - (time - missionTotime[input[i]] - 1);
+			while (gap)
+			{
+				res.push_back('_');
+				gap--;
+			}
+			time = k + missionTotime[input[i]] + 1;
+			missionTotime[input[i]] = time;
+		}
+		res.push_back(input[i]);
+	}
+	return res;
+}
+
+// mission order, same task cannot be called in a period (missions,task,cd)
+int missionOrder(vector<int>mission, int k)
+{
+	if (mission.size())return 0;
+	unordered_map<int, int>mp;
+	int time = 0,n=mission.size();
+	for (int i = 0; i < n; ++i)
+	{
+		time++;
+		if (mp.find(mission[i]) != mp.end() || time - mp[mission[i]] > k)
+		{
+			mp[mission[i]] = time;
+		}
+		else
+		{
+			time = k + mp[mission[i]] + 1;
+			mp[mission[i]] = time;
+		}
+	}
+	return time;
+}
+
+// if can change the order of mission, how to minize the time ""
+// always arrange the mission with highest frequence
+//if its time interval is smaller than k, find the second highest mission
+// if all mission's time interval smaller than k, just add '*'
+
+string minizTime(string input, int k)
+{
+	string res;
+	return res;// interesting;
+}
+
+// has common substring
+bool hasCommonThanK(string A, string B, int k)
+{
+	if (k <1)return true;
+	int m = A.size(), n = B.size();
+	vector<vector<int>>common(m + 1, vector<int>(n + 1, 0));
+	for (int indexA = 1; indexA <= m; ++indexA)
+	{
+		for (int indexB = 1; indexB <= n; ++indexB)
+		{
+			if (A[indexA - 1] == B[indexB - 1])
+			{
+				common[indexA][indexB] = common[indexA - 1][indexB - 1] + 1;
+			}
+			if (common[indexA][indexB] >= k)
+			{
+				cout << indexA << " " << indexB << endl;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+//tree to double linkedlist
+//n long(n)
+void connect(TreeNode* root)
+{
+	if (root == NULL)return;
+	if (root->left)
+	{
+		TreeNode* left = root->left;
+		connect(left);
+		while (left->right)left = left->right;
+		left->right = root;
+		root->left = left;
+	}
+	if (root->right)
+	{
+		TreeNode* right = root->right;
+		connect(right);
+		while (right->left)right = right->left;
+		right->left = root;
+		root->right = right;
+	}
+}
+
+TreeNode* tree2linkedlist(TreeNode* root)
+{
+	if (root == NULL)return root;
+	connect(root);
+	TreeNode* head = root;
+	TreeNode* tail = root;
+	while (head->left)head = head->left;
+	while (tail->right)tail = tail->right;
+	head->left = tail;
+	tail->right = head;
+	return head;
+}
+
+//better
+// O(n)
+void fixPrevPtr(TreeNode *root)
+{
+	static TreeNode *pre = NULL;
+
+	if (root != NULL)
+	{
+		fixPrevPtr(root->left);
+		root->left = pre;
+		pre = root;
+		fixPrevPtr(root->right);
+	}
+}
+
+// Changes right pointers to work as next pointers in converted DLL
+TreeNode *fixNextPtr(TreeNode *root)
+{
+	TreeNode *prev = NULL;
+	TreeNode* tail = NULL;
+	// Find the right most node in BT or last node in DLL
+	while (root && root->right != NULL)
+		root = root->right;
+	tail = root;
+
+	// Start from the rightmost node, traverse back using left pointers.
+	// While traversing, change right pointer of nodes.
+	while (root && root->left != NULL)
+	{
+		prev = root;
+		root = root->left;
+		root->right = prev;
+	}
+
+	// The leftmost node is head of linked list, return it
+	tail->right = root;
+	root->left = tail;
+	return root;
+}
+
+// The main function that converts BST to DLL and returns head of DLL
+TreeNode *BTToDLL(struct TreeNode *root)
+{
+	// Set the previous pointer
+	fixPrevPtr(root);
+
+	// Set the next pointer and return head of DLL
+	// find the 
+	return fixNextPtr(root);
+}
+
+//109
+// sorted list to binary tree
+TreeNode* makeTreebyNode(ListNode* head, ListNode* tail)
+{
+	if (head == tail)return NULL;
+	ListNode* fast = head->next;
+	ListNode* slow = head;
+	while (fast!=tail && fast->next!=tail)
+	{
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	TreeNode* root = new TreeNode(slow->val);
+	root->left = makeTreebyNode(head, slow);
+	root->right = makeTreebyNode(slow->next, tail);
+	return root;
+}
+TreeNode* sortedListToBST(ListNode* head) {
+	if (head == NULL)return NULL;
+	return makeTreebyNode(head, NULL);
+}
+
+//sorted array to bst
+  TreeNode* makeBSTrees(vector<int>&nums, int begin, int end)
+{
+	if (begin > end)return NULL;
+	else if (begin == end)return new TreeNode(nums[begin]);
+	else
+	{
+		int mid = begin + (end - begin) / 2;
+		TreeNode* root = new TreeNode(nums[mid]);
+		root->left = makeBSTrees(nums, begin, mid - 1);
+		root->right = makeBSTrees(nums, mid + 1, end);
+		return root;
+	}
+}
+
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+	int begin = 0, end = int(nums.size()) - 1;
+	return makeBSTrees(nums, begin, end);
+}
+
+//flatten tree to linked list
+void flatten(TreeNode *root) {
+	TreeNode*now = root;
+	while (now)
+	{
+		if (now->left)
+		{
+			//Find current node's prenode that links to current node's right subtree
+			TreeNode* pre = now->left;
+			while (pre->right)
+			{
+				pre = pre->right;
+			}
+			pre->right = now->right;
+			//Use current node's left subtree to replace its right subtree(original right 
+			//subtree is already linked by current node's prenode
+			now->right = now->left;
+			now->left = NULL;
+		}
+		now = now->right;
+	}
+}
+
+
+//recrusive
+TreeNode* prev1 = NULL;
+void flatten(TreeNode* root) {
+	if (root == NULL)return;
+	flatten(root->right);
+	flatten(root->left);
+	root->right = prev1;
+	root->left = NULL;
+	prev1 = root;
+}
+
+//no use global varibale
+public void flatten(TreeNode root) {
+	flatten(root, null);
+}
+private TreeNode flatten(TreeNode root, TreeNode pre) {
+	if (root == null) return pre;
+	pre = flatten(root.right, pre);
+	pre = flatten(root.left, pre);
+	root.right = pre;
+	root.left = null;
+	pre = root;
+	return pre;
+}
+
+// permutattion II
+// 
+void recursion(vector<int> num, int i, int j, vector<vector<int> > &res) {
+	if (i == j - 1) {
+		res.push_back(num);
+		return;
+	}
+	for (int k = i; k < j; k++) {
+		if (i != k && num[i] == num[k]) continue;
+		swap(num[i], num[k]);
+		recursion(num, i + 1, j, res);
+	}
+}
+vector<vector<int> > permuteUnique(vector<int> &num) {
+	sort(num.begin(), num.end());
+	vector<vector<int> >res;
+	recursion(num, 0, num.size(), res);
+	return res;
+}
+
+void dfs(vector<vector<int>>&res, vector<int>&path, vector<int>& nums)
+{
+	if (path.size() == nums.size())
+	{
+		res.push_back(path);
+		return;
+	}
+	for (int i = 0; i < nums.size(); ++i)
+	{
+		if (i == 0 || nums[i] != nums[i - 1])
+		{
+			int cnt1 = 0, cnt2 = 0;
+			for (int j = 0; j < nums.size(); ++j)if (nums[j] == nums[i])cnt1++;
+			for (int j = 0; j < path.size(); ++j)if (path[j] == nums[i])cnt2++;
+			if (cnt1 > cnt2)
+			{
+				path.push_back(nums[i]);
+				dfs(res, path, nums);
+				path.pop_back();
+			}
+		}
+	}
+}
+vector<vector<int>> permuteUnique(vector<int>& nums) {
+	vector<vector<int>>res;
+	vector<int>path;
+	sort(nums.begin(), nums.end());
+	dfs(res, path, nums);
+	return res;
+}
+
+
+//permutation I
+
+void dfs(vector<vector<int>>&res, vector<int>nums, int pos)
+{
+	if (pos == nums.size())
+	{
+		res.push_back(nums);
+		return;
+	}
+	for (int i = pos; i<nums.size(); ++i)
+	{
+		swap(nums[pos], nums[i]);
+		dfs(res, nums, pos + 1);
+	}
+}
+vector<vector<int>> permute(vector<int>& nums) {
+	vector<vector<int>>res;
+	dfs(res, nums, 0);
+	return res;
+}
+
+// permutattion I
+
+void dfs(vector<vector<int>>&res, vector<int>&path, vector<int>& nums)
+{
+	if (path.size() == nums.size())
+	{
+		res.push_back(path);
+		return;
+	}
+	for (int i = 0; i < nums.size(); ++i)
+	{
+		bool flag = true;
+		for (int j = 0; j < path.size(); ++j)
+		{
+			if (path[j] == nums[i])
+			{
+				flag = false;
+				break;
+			}
+		}
+		if (flag)
+		{
+			path.push_back(nums[i]);
+			dfs(res, path, nums);
+			path.pop_back();
+		}
+	}
+}
+vector<vector<int>> permute(vector<int>& nums) {
+	vector<vector<int>>res;
+	vector<int>path;
+	dfs(res, path, nums);
+	return res;
+}
+
+//leetcode 168
+
+
+//excel
+string convertToTitle(int n) {
+	string res;
+	while (n)
+	{
+		res = char((n - 1) % 26 + 'A') + res;
+		n = (n - 1) / 26;
+	}
+	return res;
+}
+//better
+return n == 0 ? "" : convertToTitle((n - 1) / 26) + (char)((n - 1) % 26 + 'A');
+
+//171 excel sheet column number
+int result = 0;
+for (int i = 0; i < s.size(); result = result * 26 + (s.at(i) - 'A' + 1), i++);
+return result;
+
+int titleToNumber(string s) {
+	int res = 0, n = s.size();
+	for (int i = 0; i<n; ++i)
+	{
+		res = 26 * res + int(s[i] - 'A' + 1);
+	}
+	return res;
+}
+
+//merge sort 
+
+ListNode* mergeList(ListNode* h1, ListNode* h2)
+{
+	if (h1 == NULL || h2 == NULL)return h1 ? h1 : h2;
+	ListNode* first = new ListNode(0);
+	ListNode* h3 = first;
+	while (h1 && h2)
+	{
+		if (h1->val > h2->val)
+		{
+			h3->next = h2;
+			h2 = h2->next;
+		}
+		else
+		{
+			h3->next = h1;
+			h1 = h1->next;
+		}
+		h3 = h3->next;
+	}
+	h3->next = h1 ? h1 : h2;
+	return first->next;
+}
+ListNode* sortList(ListNode* head) {
+	if (head == NULL || head->next == NULL)return head;
+	ListNode* fast = head->next;
+	ListNode* slow = head;
+	while (fast && fast->next)
+	{
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	fast = slow->next;
+	slow->next = NULL;
+	return mergeList(sortList(head), sortList(fast));
+}
+
+//merge sort array, 
+//lo=0,hi=n
+void guibing(int a[], int lo, int mi, int hi)
+{
+	int *A = a + lo;
+	int lb = mi - lo;
+	int lc = hi - mi;
+	int *B = new int[lb];
+	int *C = a + mi;
+	for (int i = 0; i < lb; B[i] = A[i++]);
+	for (int i = 0, j = 0, k = 0; j < lb;)
+	{
+		if ((k >= lc) || B[j] <= C[k])A[i++] = B[j++];
+		if (k<lc && (B[j]>C[k]))A[i++] = C[k++];
+	}
+}
+void merge_sort(int a[], int low, int high)
+{
+	if (high - low < 2)return;
+	int middle = (high + low) >> 1;
+	merge_sort(a, low, middle);
+	merge_sort(a, middle, high);
+	guibing(a, low, middle, high);
+}
+
+
+
+//266 palindrome permutation
+
+bool canPermutePalindrome(string s) {
+	unordered_map<char, int>mp;
+	for (char a : s)mp[a]++;
+	int odd = 0;
+	for (auto it = mp.begin(); it != mp.end(); ++it)
+	{
+		if (it->second & 0x1)
+		{
+			odd++;
+			if (odd>1)return false;
+		}
+	}
+	return true;
+}
+
+//better
+bool canPermutePalindrome(string s) {
+	int odd = 0, counts[256] = { 0 };
+	for (char c : s)
+		odd += ++counts[c] & 1 ? 1 : -1;//  if odd add 1, else substract 1;
+	return odd <= 1;
+}
+
+
+// 267 palindrome permuationII
+void getAllPermutations(vector<string>&ans, string res, char special)
+{
+	sort(res.begin(), res.end());
+	string tmp;
+	do{
+		tmp = res;
+		reverse(tmp.begin(), tmp.end());
+		ans.push_back(special == ' ' ? res + tmp : res + special + tmp);
+	} while (next_permutation(res.begin(), res.end()));
+}
+vector<string> generatePalindromes(string s) {
+	unordered_map<char, int>mp;
+	for (char c : s)mp[c]++;
+	string res;
+	int odd = 0;
+	char special = ' ';
+	for (auto it = mp.begin(); it != mp.end(); ++it)
+	{
+		if (it->second & 0x1)
+		{
+			if (++odd>1)return{};
+			special = it->first;
+		}
+		res.resize(res.size() + it->second / 2, it->first);// just insert half length, then you can do the permuatiton
+	}
+	vector<string>ans;
+	getAllPermutations(ans, res, special);
+	return ans;
+}
+
+// how many palindrome in the string
+// palindrome substrings
+// count palindrome
+// all palindrome substring
+int countPalindrome(string str)
+{
+	int i, j, k,n = str.size();
+	unordered_set<string>sets;
+	for (int i = 0; i < n; ++i)
+	{
+		sets.insert(str.substr(i, 1));
+		k = i - 1; j = i + 1;//count odd length palindromes;
+		while (k >= 0 && j < n && str[k] == str[j])
+		{
+			sets.insert(str.substr(k, j - k + 1));
+			k--;
+			j++;
+		}
+		k = i; j = i + 1;//count even length palidrom
+		while (k >= 0 && j < n && str[k] == str[j])
+		{
+			sets.insert(str.substr(k, j - k + 1));
+			k--;
+			j++;
+		}
+	}
+	return sets.size();
+}
+
+vector<string>AllsubPalindrome(string str)
+{
+	int i, j, k, n = str.size();
+	unordered_set<string>sets;
+	for (int i = 0; i < n; ++i)
+	{
+		sets.insert(str.substr(i, 1));
+		k = i - 1; j = i + 1;//count odd length palindromes;
+		while (k >= 0 && j < n && str[k] == str[j])
+		{
+			sets.insert(s.substr(k, j - k + 1));
+			k--;
+			j++;
+		}
+		k = i; j = i + 1;//count even length palidrom
+		while (k >= 0 && j < n && str[k] == str[j])
+		{
+			sets.insert(str.substr(k, j - k + 1));
+			k--;
+			j++;
+		}
+	}
+	vector<string>res(sets.begin(), sets.end());
+	return res;
+}
+//leetcode 5 lingest palindrome substring
+// can use manacher algorithms
+string longestPalindrome(string s) {
+    int n = s.size(), start = 0, maxlength = 0;
+	for (int i = 0;i < n;)
+	{
+		if (n - i <= maxlength / 2)break;
+		int left = i, right = i;
+		while (right < n - 1 && s[right] == s[right + 1])right++;
+		i = right + 1;
+		while (left > 0 && right < n - 1 && s[right + 1] == s[left - 1]) { right++;left--; }
+		if (maxlength <right - left + 1)
+		{
+			start = left;
+			maxlength = right - left + 1;
+		}
+	}
+	return s.substr(start, maxlength);
+    }
+
+
+// longest palindrome subsequence
+   int longestPalindromeSubsequence(string str)
+{
+   int n = strlen(str);
+   int i, j, cl;
+   int L[n][n];  // Create a table to store results of subproblems
+ 
+ 
+   // Strings of length 1 are palindrome of lentgh 1
+   for (i = 0; i < n; i++)
+      L[i][i] = 1;
+ 
+    // Build the table. Note that the lower diagonal values of table are
+    // useless and not filled in the process. The values are filled in a
+    // manner similar to Matrix Chain Multiplication DP solution (See
+    // http://www.geeksforgeeks.org/archives/15553). cl is length of
+    // substring
+    for (cl=2; cl<=n; cl++)//cl: sublength
+    {
+        for (i=0; i<n-cl+1; i++)
+        {
+            j = i+cl-1;
+            if (str[i] == str[j] && cl == 2)
+               L[i][j] = 2;
+            else if (str[i] == str[j])
+               L[i][j] = L[i+1][j-1] + 2;
+            else
+               L[i][j] = max(L[i][j-1], L[i+1][j]);
+        }
+    }
+ 
+    return L[0][n-1];
+}
+//divide integer without division
+int divide(int dividend, int divisor) {
+	int flag = (dividend > 0) ^ (divisor > 0);
+	if (dividend == 0)return 0;
+	long long divid = (long long)dividend;
+	long long divis = (long long)divisor;
+	divid = llabs(divid); divis = llabs(divis);
+	long long res = 0;
+	while (divid >= divis)
+	{
+		long long c = divis;
+		int i = 0;
+		while (divid >= c)
+		{
+			divid -= c;
+			c = c <<= 1;
+			res += (1 << i);
+			i++;
+		}
+	}
+	res *= (flag ? -1 : 1);
+	if (res > INT_MAX)return INT_MAX;
+	else return res;
+}
+
+
+
+//natural string compare;
+int stringcompare(string str1,string str2)
+{
+	int index1=0,index2=0,m=str1.size(),n=str2.size();
+	while(index1<m && index2<n)
+	{
+		if(str1[index1]==str2[index2] && !isdigit(str2[index2]))
+		{
+			index1++;
+			index2++;
+		}else if(isdigit(str1[index1]) && isdigit(str2[index2]))
+		{
+			int number1=0,number2=0;
+			while(index1<m && isdigit(str1[index1]))
+			{
+				number1=10*number1+str1[index1++]-'0';
+			}
+			while(index2<n && isdigit(str2[index2]))
+			{
+				number2=10*number2+str2[index2++]-'0';
+			}
+			if(number1!=number2)return number1>number2?1:-1;
+		}else// not equal or one is number
+		{
+			if(isdigit(str2[index2]))return 1;
+			else if(isdigit(str1[index1]))return -1;
+			if(str1[index1]!=str2[index2])return str1[index1]>str2[index2]?1:-1;
+		}
+	}
+	if(index1==m && index2==n)return 0;
+	return index1<m?1:-1;
+}
+
+//random return number according to weight
+// in case of -1 from findindex
+int findindex(vector<int>& prefix,int r,int left,int right)
+{
+	int mid=0;
+	while(left<right)
+	{
+		mid=left+(right-left)/2;
+		r>prefix[mid]?left=mid+1:right=mid;
+	}
+	return arr[left]>=r?left:-1;
+}
+
+int myrand(vector<int>&nums,vector<int>& frequency)
+{
+	int n=nums.size();
+	if(n==0)return -1;
+	vector<int>prefix(n,frequency[0]);
+	for(int i=1;i<n;++i)prefix[i]=prefix[i-1]+frequency[i];
+	int r=(rand()%prefix[n-1])+1;
+	int index=findindex(prefix,r,0,n-1);
+	return nums[index];
+}
+
+//sorted tranform array
+// square , from n-1 to 0, bigger changes
+//public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+//        int n = nums.length;
+//        int[] sorted = new int[n];
+//        int i = 0, j = n - 1;
+//        int index = a >= 0 ? n - 1 : 0;
+//        while (i <= j) {
+//            if (a >= 0) {
+//                sorted[index--] = quad(nums[i], a, b, c) >= quad(nums[j], a, b, c) ? quad(nums[i++], a, b, c) : quad(nums[j--], a, b, c);
+//            } else {
+//                sorted[index++] = quad(nums[i], a, b, c) >= quad(nums[j], a, b, c) ? quad(nums[j--], a, b, c) : quad(nums[i++], a, b, c);
+//            }
+//        }
+//        return sorted;
+//    }
+//    
+//    private int quad(int x, int a, int b, int c) {
+//        return a * x * x + b * x + c;
+//    }
+
+
+// 62 unique paths
+
+long long C(int m, int n)
+{
+	if (m < n - m)m = n - m;
+	long long res = 1;
+	for (int i = m + 1; i <= n; ++i)res *= i;
+	for (int j = 1; j <= n - m; ++j)res /= j;
+	return res;
+}
+
+int uniquePaths(int m, int n) {
+	if (m < 1 || m + n < 2)return 0;
+	return C(m - 1, m + n - 2);
+}
+
+//63 unique paths II
+int uniquePathsWithObstacles(vector<vector<int>>& Grid) {
+	if (Grid.empty() || Grid[0].empty())return 0;
+	int m = Grid.size(), n = Grid[0].size();
+	if (Grid[m - 1][n - 1] == 1)return 0;
+	vector<vector<int>>dp(m, vector<int>(n, 0));
+	dp[m - 1][n - 1] = 1;
+	for (int i = n - 2; i >= 0; --i)
+	{
+		if (Grid[m - 1][i] == 0 && dp[m - 1][i + 1] == 1)dp[m - 1][i] = 1;
+	}
+	for (int i = m - 2; i >= 0; --i)
+	{
+		if (Grid[i][n - 1] == 0 && dp[i + 1][n - 1] == 1)dp[i][n - 1] = 1;
+	}
+	for (int i = m - 2; i >= 0; --i)
+	{
+		for (int j = n - 2; j >= 0; --j)
+		{
+			dp[i][j] = Grid[i][j] == 1 ? 0 : dp[i + 1][j] + dp[i][j + 1];
+		}
+	}
+	return dp[0][0];
+}
+
+// save space
+/*
+Well, the code is accepted but it has some obvious redundancy. There are two major concerns:
+
+Each time when we update path[i][j], we only need path[i - 1][j] (at the same column) and path[i][j - 1] (at the left column), so it is unnecessary to maintain the full m*n matrix. Maintaining two columns is enough.
+There are some cases that the loop can be terminated earlier. Suppose obstacleGrid = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]], then we can see that it is impossible to reach the bottom-right corner after updating the second column since the number of paths to reach each element in the second column is 0.
+Taken these into considerations, we write down the following optimized code.
+
+class Solution {
+public: 
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<int> pre(m, 0);
+        vector<int> cur(m, 0);
+        for (int i = 0; i < m; i++) {
+            if (!obstacleGrid[i][0])
+                pre[i] = 1;
+            else break;
+        }
+        for (int j = 1; j < n; j++) {
+            bool flag = false;
+            if (!obstacleGrid[0][j]) {
+                cur[0] = pre[0];
+                if (cur[0]) flag = true; 
+            }
+            else cur[0] = 0;
+            for (int i = 1; i < m; i++) {
+                if (!obstacleGrid[i][j]) {
+                    cur[i] = cur[i - 1] + pre[i];
+                    if (cur[i]) flag = true;
+                }
+                else cur[i] = 0;
+            }
+            if (!flag) return 0;
+            swap(pre, cur);
+        }
+        return pre[m - 1];
+    }
+}; 
+Further inspecting the above code, keeping two vectors only serve for the purpose of recovering pre[i], which is simply cur[i] before its update. So we can use only one vector and the space is further optimized.
+
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<int> cur(m, 0);
+        for (int i = 0; i < m; i++) {
+            if (!obstacleGrid[i][0])
+                cur[i] = 1;
+            else break;
+        }
+        for (int j = 1; j < n; j++) {
+            bool flag = false;
+            if (obstacleGrid[0][j])
+                cur[0] = 0;
+            else flag = true;
+            for (int i = 1; i < m; i++) {
+                if (!obstacleGrid[i][j]) {
+                    cur[i] += cur[i - 1]; 
+                    if (cur[i]) flag = true;
+                }
+                else cur[i] = 0; 
+            }
+            if (!flag) return 0;
+        }
+        return cur[m - 1];
+    }
+};
+*/
+
+// min queue
+
+//298 binary tree longest consecutive sequence
+void dfs(TreeNode* root, int value, int& res, int count)
+{
+	if (root->val == value)
+	{
+		count++;
+		res = max(res, count);
+	}
+	else count = 1;
+	if (root->left)dfs(root->left, root->val + 1, res, count);
+	if (root->right)dfs(root->right, root->val + 1, res, count);
+}
+int longestConsecutive(TreeNode* root) {
+	if (root == NULL)return 0;
+	int res = 0;
+	dfs(root, root->val, res, 0);
 	return res;
 }
